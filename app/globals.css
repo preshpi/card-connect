@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base */
+  --white: #ffffff;
+  --black: #000000;
+
+  /* Neutrals */
+  --neutral-50: #f9f9f9;
+  --neutral-100: #f3f4f6;
+  --neutral-200: #eaecf0;
+  --neutral-300: #d0d5dd;
+  --neutral-400: #ebebeb;
+  --neutral-500: #667085;
+  --neutral-600: #767980;
+  --neutral-700: #1d1f2c;
+  --neutral-800: #1b231f;
+  --neutral-900: #110011;
+
+  /* Brand */
+  --primary-400: #b1aeea;
+  --primary-500: #7269e3;
+  --primary-600: #5a55d2;
+  --primary-700: #5d53df;
+  --primary-800: #786fe4;
+
+  /* Status */
+  --success-500: #80d68d;
+  --danger-500: #bf010a;
+
+  /* Opacity */
+  --black-10: rgb(0 0 0 / 0.1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  /* Base */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Neutrals */
+  --color-neutral-50: #f9f9f9;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #eaecf0;
+  --color-neutral-300: #d0d5dd;
+  --color-neutral-400: #ebebeb;
+  --color-neutral-500: #667085;
+  --color-neutral-600: #767980;
+  --color-neutral-700: #1d1f2c;
+  --color-neutral-800: #1b231f;
+  --color-neutral-900: #110011;
+
+  /* Brand */
+  --color-primary-400: #b1aeea;
+  --color-primary-500: #7269e3;
+  --color-primary-600: #5a55d2;
+  --color-primary-700: #5d53df;
+  --color-primary-800: #786fe4;
+
+  /* Status */
+  --color-success-500: #80d68d;
+  --color-danger-500: #bf010a;
+
+  /* Opacity */
+  --color-black-10: rgb(0 0 0 / 0.1);
+
+  /* font */
+  --font-sans: var(--font-sora);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  font-family: var(--font-sans);
 }

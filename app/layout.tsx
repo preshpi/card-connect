@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import localFont from "next/font/local";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const sora = localFont({
+  src: [
+    { path: "../public/fonts/Sora-ExtraBold.ttf", weight: "800" },
+    { path: "../public/fonts/Sora-Bold.ttf", weight: "700" },
+    { path: "../public/fonts/Sora-SemiBold.ttf", weight: "600" },
+    { path: "../public/fonts/Sora-Medium.ttf", weight: "500" },
+    { path: "../public/fonts/Sora-Regular.ttf", weight: "400" },
+    { path: "../public/fonts/Sora-Light.ttf", weight: "300" },
+    { path: "../public/fonts/Sora-Thin.ttf", weight: "200" },
+  ],
+  variable: "--font-sora",
 });
 
 export const metadata: Metadata = {
@@ -24,11 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${sora.variable} antialiased`}>{children}</body>
     </html>
   );
 }
