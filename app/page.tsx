@@ -1,5 +1,3 @@
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24"></main>
-  );
+  return <main className="text-neutral-500 min-h-screen">landing page</main>;
 }
