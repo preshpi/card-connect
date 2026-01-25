@@ -6,16 +6,20 @@ import Link from "next/link";
 import Image from "next/image";
 import Logo from "../../../public/assets/Logo.svg";
 
-export default function SignupPage() {
-  const [showPassword, setShowPassword] = useState(false);
+export default function ResetPasswordPage() {
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
   const handleSubmit = () => {
-    console.log("Form submitted:", formData);
+    if (formData.newPassword !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+    console.log("Password reset submitted");
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +30,7 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="flex items-start justify-start lg:items-center lg:justify-center p-5 bg-white">
+    <main className="flex items-start justify-start lg:items-center lg:justify-center p-5 bg-white min-h-screen">
       <div className="w-full max-w-full lg:max-w-md p-4 lg:p-8">
         {/* Logo */}
         <div className="flex items-center justify-start lg:justify-center mb-8">
@@ -44,78 +48,71 @@ export default function SignupPage() {
         {/* Header */}
         <div className="text-left lg:text-center mb-8">
           <h1 className="text-2xl font-bold text-[#1D1F2C] mb-2">
-            Create an account
+            Reset your password
           </h1>
           <p className="text-sm text-[#1B231F]">
-            Start exploring and utilizing all the resources that will help you
-            elevate every design you make.
+            Choose a new and secure password to protect your account.
           </p>
         </div>
 
         {/* Form Fields */}
         <div className="space-y-5">
-          {/* Name Field */}
+          {/* New Password Field */}
           <div>
             <label
-              htmlFor="name"
+              htmlFor="newPassword"
               className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
             >
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter name"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
-            />
-          </div>
-
-          {/* Email Field */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter email address"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
-            />
-          </div>
-
-          {/* Password Field */}
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
-            >
-              Password
+              New Password
             </label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                value={formData.password}
+                type={showNewPassword ? "text" : "password"}
+                id="newPassword"
+                name="newPassword"
+                value={formData.newPassword}
                 onChange={handleChange}
                 placeholder="Enter password"
                 className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowNewPassword(!showNewPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition cursor-pointer"
               >
-                {showPassword ? (
+                {showNewPassword ? (
+                  <Eye className="w-5 h-5" />
+                ) : (
+                  <EyeOff className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Password Field */}
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Enter password"
+                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition cursor-pointer"
+              >
+                {showConfirmPassword ? (
                   <Eye className="w-5 h-5" />
                 ) : (
                   <EyeOff className="w-5 h-5" />
@@ -129,21 +126,8 @@ export default function SignupPage() {
             onClick={handleSubmit}
             className="w-full bg-[#7269E3] hover:bg-[#7269D1] text-white font-medium py-3 rounded-full transition duration-200 cursor-pointer shadow-sm"
           >
-            Create Account
+            Update Password
           </button>
-        </div>
-
-        {/* Login Link */}
-        <div className="mt-6 text-left lg:text-center">
-          <p className="text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="text-[#7269E3] hover:underline font-medium"
-            >
-              Log in
-            </Link>
-          </p>
         </div>
       </div>
     </main>

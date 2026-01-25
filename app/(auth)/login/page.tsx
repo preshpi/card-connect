@@ -1,100 +1,138 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
+
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { Button } from "../../components/ui/Button";
-import Input from "../../components/ui/Input";
-import { signInSchema, TsignInSchema } from "../../types/auth/Login";
+import Image from "next/image";
+import Logo from "../../../public/assets/Logo.svg";
 
-const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<TsignInSchema>({ resolver: zodResolver(signInSchema) });
+export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const onSubmit = (data: TsignInSchema) => {
-    console.log(data);
-    reset();
+  const handleSubmit = () => {
+    console.log("Form submitted:", formData);
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   return (
-    <div className="w-full flex items-start justify-start max-w-125 mx-auto">
-      <div className="space-y-2 w-full">
-        <h3 className="text-[32px] text-white font-semibold">
-          Welcome back! 😎
-        </h3>
-        <p className="text-[18px] text-[#F1F1F1]">
-          Login with your credentials to continue.
-        </p>
-
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-full pt-12 space-y-8"
-        >
-          <div className="flex flex-col gap-y-1">
-            <Input
-              id="email"
-              type="email"
-              {...register("email")}
-              label="Email Address"
-              autoComplete="off"
-              placeholder="Enter email address"
+    <main className="flex items-start justify-start lg:items-center lg:justify-center p-5 bg-white min-h-screen">
+      <div className="w-full max-w-full lg:max-w-md p-4 lg:p-8">
+        {/* Logo */}
+        <div className="flex items-center justify-start lg:justify-center mb-8">
+          <Link href="/">
+            <Image
+              src={Logo}
+              alt="CardConnect Logo"
+              width={150}
+              height={150}
+              priority
             />
-            {errors.email && (
-              <span className="text-red-400 text-sm">
-                {errors.email.message}
-              </span>
-            )}
-          </div>
+          </Link>
+        </div>
 
+        {/* Header */}
+        <div className="text-left lg:text-center mb-8">
+          <h1 className="text-2xl font-bold text-[#1D1F2C] mb-2">Log In</h1>
+          <p className="text-sm text-[#1B231F]">
+            Welcome back! Please enter your email and password to proceed.
+          </p>
+        </div>
+
+        {/* Form Fields */}
+        <div className="space-y-5">
+          {/* Email Field */}
           <div>
-            <div className="flex flex-col gap-y-1">
-              <Input
-                label="Password"
-                id="password"
-                {...register("password")}
-                placeholder="Enter Password"
-                type="password"
-                password
-                autoComplete="true"
-              />
-              {errors.password && (
-                <span className="text-red-400 text-sm">{`${errors.password.message}`}</span>
-              )}{" "}
-            </div>
-
-            <p className="flex cursor-pointer hover:text-[#b3b5f5] hover:underline hover:transition-all duration-300 items-end w-full justify-end pt-4.5 font-medium text-[#a5a6f2] text-sm outline-none focus:outline-none">
-              Forgot password?
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-[#7269E3] text-white"
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
             >
-              Sign in
-            </Button>
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter email address"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
+            />
+          </div>
 
-            <div className="flex items-center space-x-2 justify-center">
-              {" "}
-              <span className="text-[#64748B]">
-                Don&apos;t have an account?{" "}
-              </span>{" "}
-              <Link
-                href={"/signup"}
-                className="text-[#a5a6f2]  hover:text-[#b3b5f5] hover:underline hover:transition-all duration-300 cursor-pointer font-medium focus:outline-none outline-none"
+          {/* Password Field */}
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter password"
+                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition cursor-pointer"
               >
-                Create an account
-              </Link>{" "}
+                {showPassword ? (
+                  <Eye className="w-5 h-5" />
+                ) : (
+                  <EyeOff className="w-5 h-5" />
+                )}
+              </button>
             </div>
           </div>
-        </form>
-      </div>
-    </div>
-  );
-};
 
-export default Login;
+          {/* Forgot Password Link */}
+          <div className="text-right">
+            <a
+              href="/forgot-password"
+              className="text-sm text-[#1B231F] hover:text-[#7269E3] transition"
+            >
+              Forgot Password?
+            </a>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            onClick={handleSubmit}
+            className="w-full bg-[#7269E3] hover:bg-[#7269D1] text-white font-medium py-3 rounded-full transition duration-200 cursor-pointer shadow-sm"
+          >
+            Log In
+          </button>
+        </div>
+
+        {/* Create Account Link */}
+        <div className="mt-6 text-left lg:text-center">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{" "}
+            <a
+              href="/signup"
+              className="text-[#7269E3] hover:underline font-medium"
+            >
+              Create Account
+            </a>
+          </p>
+        </div>
+      </div>
+    </main>
+  );
+}
