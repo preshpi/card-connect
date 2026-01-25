@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
-import Header from "./components/LandingPage/Header";
-import Footer from "./components/LandingPage/Footer";
+import ConditionalLayout from "./components/ConditionalLayout";
 
 const sora = localFont({
   src: [
@@ -30,9 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${sora.variable} antialiased scroll-smooth`}>
-        <Header />
-        {children}
-        <Footer />
+        <ConditionalLayout>{children}</ConditionalLayout>
       </body>
     </html>
   );
