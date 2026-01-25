@@ -9,11 +9,31 @@ type MenuItem = {
 };
 
 const menuItems: MenuItem[] = [
-  { label: "My Link", icon: "/assets/icons/Category.svg", href: "/links" },
-  { label: "Analytics", icon: "/assets/icons/Chart.svg", href: "/analytics" },
-  { label: "Customize", icon: "/assets/icons/Edit.svg", href: "/customize" },
-  { label: "Profile", icon: "/assets/icons/Profile.svg", href: "/profile" },
-  { label: "Settings", icon: "/assets/icons/Setting.svg", href: "/settings" },
+  {
+    label: "My Link",
+    icon: "/assets/icons/Category.svg",
+    href: "/dashboard/links",
+  },
+  {
+    label: "Analytics",
+    icon: "/assets/icons/Chart.svg",
+    href: "/dashboard/analytics",
+  },
+  {
+    label: "Customize",
+    icon: "/assets/icons/Edit.svg",
+    href: "/dashboard/customize",
+  },
+  {
+    label: "Profile",
+    icon: "/assets/icons/Profile.svg",
+    href: "/dashboard/profile",
+  },
+  {
+    label: "Settings",
+    icon: "/assets/icons/Setting.svg",
+    href: "/dashboard/settings",
+  },
 ];
 
 const Topbar = () => {

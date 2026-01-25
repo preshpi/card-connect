@@ -44,9 +44,11 @@ const Header = () => {
 
         {/* Desktop CTA */}
         <div className="hidden md:block">
-          <Button className="bg-[#7269E3] text-white px-6 rounded-full py-4 text-sm">
-            Create an account
-          </Button>
+          <Link href="/signup">
+            <Button className="bg-[#7269E3] cursor-pointer text-white px-6 rounded-full py-4 text-sm">
+              Create an account
+            </Button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}

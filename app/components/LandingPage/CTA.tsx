@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const CTASection = () => {
   return (
     <section className="py-16 md:py-24 bg-[#F5FAF7]">
@@ -15,10 +17,11 @@ const CTASection = () => {
               Transform how you connect, customize your NFC business card today
               and leave a lasting impression.
             </p>
-
-            <button className="bg-[#7269E3] hover:bg-[#7269E3]/102 text-white px-12 lg:py-6 py-3 text-lg rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl w-full ">
-              Build My Smart Card
-            </button>
+            <Link href="/signup">
+              <button className="bg-[#7269E3] cursor-pointer hover:bg-[#7269E3]/102 text-white px-12 lg:py-6 py-3 text-lg rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl w-full ">
+                Build My Smart Card
+              </button>
+            </Link>
           </div>
         </div>
       </div>
