@@ -1,3 +1,4 @@
+import { Grip, Pencil, Trash } from "lucide-react";
 import Image from "next/image";
 
 const links = [
@@ -52,20 +53,25 @@ const MyLink = () => {
                 key={link.label}
                 className="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between"
               >
-                <div className="flex items-center gap-4">
-                  {/* <Icons.dragIcon className="text-gray-400" /> */}
-                  <div>
-                    <p className="font-medium text-gray-900">{link.label}</p>
-                    <p className="text-sm text-gray-500 truncate max-w-xs">
-                      {link.url}
-                    </p>
+                <div className="flex items-center gap-4 justify-between w-full">
+                  <div className="flex items-center gap-x-10 cursor-grab">
+                    <Grip size={20} color="#B3B5B4" />
+                    <div>
+                      <div className="flex items-center gap-x-3">
+                        <p className="font-medium text-gray-900">
+                          {link.label}
+                        </p>
+                        <Pencil size={16} color="#000000" />
+                      </div>
+                      <p className="text-sm text-gray-500 truncate max-w-xs">
+                        {link.url}
+                      </p>
+                    </div>
                   </div>
+                  <Trash size={20} color="#000000" />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {/* <Icons.editIcon className="text-gray-500 cursor-pointer" /> */}
-                  {/* <Icons.trashIcon className="text-gray-500 cursor-pointer" /> */}
-                </div>
+                <div className="flex items-center gap-3"></div>
               </div>
             ))}
           </div>
