@@ -4,21 +4,32 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ChevronDown, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronDown,
+  AlertCircle,
+  QrCode,
+  Check,
+} from "lucide-react";
 import { CodeCardSchema, CodeCardValues } from "@/app/types/customize/codeCard";
 import { useBuilderStore } from "@/app/store/useBuilderStore";
+import { CODE_THEMES } from "@/app/utils/general";
 
 const DetailsPage = () => {
   const router = useRouter();
   const { setDetails, ...storedData } = useBuilderStore();
+
   const [mobileStep, setMobileStep] = useState<"form" | "preview">("form");
   const [cardView, setCardView] = useState<"front" | "back">("front");
 
-  // 1. Initialize Form
+  // Initialize Form
   const {
     register,
     handleSubmit,
     watch,
+    setValue, // Needed to manually set the theme
+    trigger,
+    getValues,
     formState: { errors },
   } = useForm<CodeCardValues>({
     resolver: zodResolver(CodeCardSchema),
@@ -28,38 +39,60 @@ const DetailsPage = () => {
       email: storedData.email,
       link: storedData.link,
       availableForJob: storedData.availableForJob,
+      theme: storedData.theme || "vscode", // Default to VS Code
     },
   });
 
-  // 2. Sync form changes to Zustand for the Live Preview
-  const watchedFields = watch();
-  // useEffect(() => {
-  //   setDetails(watchedFields);
-  // }, [watchedFields, setDetails]);
+  // Watch for changes to update Zustand
+  useEffect(() => {
+    const subscription = watch((values) => {
+      // @ts-ignore - partial update is fine
+      setDetails(values);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setDetails]);
+
+  // Get current theme data for rendering
+  const currentThemeKey = watch("theme") || "vscode";
+  const activeTheme = CODE_THEMES[currentThemeKey];
 
   const onProceed = (data: CodeCardValues) => {
     setDetails(data);
     setMobileStep("preview");
   };
 
+  const handleCheckout = async () => {
+    const valid = await trigger();
+    if (valid) {
+      setDetails(getValues());
+      router.push("/dashboard/capture");
+    }
+  };
+
+  const handleMobileBack = () => {
+    setMobileStep("form");
+  };
+
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-white">
-      {/* FORM SECTION */}
-      <form
-        onSubmit={handleSubmit(onProceed)}
-        className={`flex-1 p-6 md:p-12 lg:max-w-2xl ${mobileStep === "preview" ? "hidden lg:block" : "block"}`}
+    <div className="flex flex-col lg:flex-row min-h-screen text-[#1B231F]">
+      {/* --- LEFT COLUMN: FORM --- */}
+      <div
+        className={`flex-1 pt-8 ${mobileStep === "preview" ? "hidden lg:block" : "block"}`}
       >
         <button
           type="button"
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-gray-600 mb-8"
+          className="flex items-center gap-2 text-[#52525B] mb-8 hover:text-black transition-colors"
         >
-          <ArrowLeft size={18} /> <span className="font-medium">Back</span>
+          <div className="p-1 rounded-full border-2 border-[#7269E3]">
+            <ArrowLeft size={16} color="#7269E3" />
+          </div>
+          <span className="font-medium">Back</span>
         </button>
 
         <h1 className="text-2xl font-bold mb-8">Enter your details</h1>
 
-        <div className="space-y-5">
+        <form onSubmit={handleSubmit(onProceed)} className="space-y-5">
           <InputField
             label="Full Name"
             registration={register("fullName")}
@@ -67,16 +100,16 @@ const DetailsPage = () => {
             placeholder="Enter full name"
           />
           <InputField
-            label="Role"
-            registration={register("role")}
-            error={errors.role?.message}
-            placeholder="Enter role"
-          />
-          <InputField
             label="Email Address"
             registration={register("email")}
             error={errors.email?.message}
             placeholder="Enter email address"
+          />
+          <InputField
+            label="Role"
+            registration={register("role")}
+            error={errors.role?.message}
+            placeholder="Enter role"
           />
           <InputField
             label="Link"
@@ -113,34 +146,194 @@ const DetailsPage = () => {
               </p>
             )}
           </div>
+
+          {/* --- THEME SELECTOR --- */}
+          <div>
+            <label className="block text-sm font-bold mb-3 text-gray-700">
+              Select Theme
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {Object.entries(CODE_THEMES).map(([key, theme]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setValue("theme", key)}
+                  className={`relative w-12 h-12 cursor-pointer rounded-full border-2 transition-all flex items-center justify-center ${
+                    currentThemeKey === key
+                      ? "border-indigo-600 scale-110 shadow-md"
+                      : "hover:scale-105 border-neutral-400"
+                  }`}
+                  style={{ backgroundColor: theme.bg }}
+                  title={theme.label}
+                >
+                  {currentThemeKey === key && (
+                    <Check
+                      size={18}
+                      className={theme.isLight ? "text-black" : "text-white"}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full mt-8 py-4 bg-[#6366F1] text-white rounded-2xl font-bold lg:hidden shadow-lg shadow-indigo-200"
+          >
+            Proceed
+          </button>
+        </form>
+      </div>
+
+      {/* --- RIGHT COLUMN: PREVIEW --- */}
+      <div
+        className={`flex-1 bg-[#F9FAFB] p-6 lg:p-12 flex flex-col items-center ${mobileStep === "form" ? "hidden lg:flex" : "flex"}`}
+      >
+        {/* Mobile Header */}
+        <div className="w-full flex items-center mb-8 lg:hidden">
+          <button
+            onClick={handleMobileBack}
+            className="p-2 -ml-2 text-gray-600"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <span className="flex-1 text-center font-bold mr-6 text-lg">
+            Preview
+          </span>
+        </div>
+
+        {/* View Toggle */}
+        <div className="bg-gray-200 p-1 rounded-full flex gap-1 mb-12 w-full max-w-[320px]">
+          <button
+            onClick={() => setCardView("front")}
+            className={`flex-1 py-2 rounded-full text-sm font-medium transition-all ${cardView === "front" ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-gray-700"}`}
+          >
+            Front View
+          </button>
+          <button
+            onClick={() => setCardView("back")}
+            className={`flex-1 py-2 rounded-full text-sm font-medium transition-all ${cardView === "back" ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-gray-700"}`}
+          >
+            Back View
+          </button>
+        </div>
+
+        {/* The Card */}
+        <div className="w-full max-w-md aspect-[1.6/1] relative perspective-1000">
+          {cardView === "front" ? (
+            /* FRONT VIEW: Dynamic Styles based on ActiveTheme */
+            <div
+              className="w-full h-full rounded-2xl shadow-2xl p-6 font-mono text-sm animate-in fade-in zoom-in-95 duration-300 border border-black/5"
+              style={{
+                backgroundColor: activeTheme.bg,
+                color: activeTheme.text,
+              }}
+            >
+              <div className="flex gap-1.5 mb-6">
+                <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
+                <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+                <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
+              </div>
+
+              <div
+                className="mb-3 text-xs opacity-50"
+                style={{ color: activeTheme.tokens.comment }}
+              >
+                // Developer Business Card
+              </div>
+
+              <div className="leading-relaxed text-xs sm:text-sm">
+                <span className="select-none mr-4 opacity-30">1</span> {`{`}{" "}
+                <br />
+                <span className="select-none mr-4 opacity-30">2</span>
+                <span
+                  className="pl-2"
+                  style={{ color: activeTheme.tokens.key }}
+                >
+                  "name"
+                </span>
+                :
+                <span style={{ color: activeTheme.tokens.string }}>
+                  {" "}
+                  "{storedData.fullName || "@username"}"
+                </span>
+                ,<br />
+                <span className="select-none mr-4 opacity-30">3</span>
+                <span
+                  className="pl-2"
+                  style={{ color: activeTheme.tokens.key }}
+                >
+                  "email"
+                </span>
+                :
+                <span style={{ color: activeTheme.tokens.string }}>
+                  {" "}
+                  "{storedData.email || "mail@example.com"}"
+                </span>
+                ,<br />
+                <span className="select-none mr-4 opacity-30">4</span>
+                <span
+                  className="pl-2"
+                  style={{ color: activeTheme.tokens.key }}
+                >
+                  "role"
+                </span>
+                :
+                <span style={{ color: activeTheme.tokens.string }}>
+                  {" "}
+                  "{storedData.role || "developer"}"
+                </span>
+                ,<br />
+                <span className="select-none mr-4 opacity-30">5</span>
+                <span
+                  className="pl-2"
+                  style={{ color: activeTheme.tokens.key }}
+                >
+                  "available"
+                </span>
+                :
+                <span style={{ color: activeTheme.tokens.boolean }}>
+                  {" "}
+                  {storedData.availableForJob || "true"}
+                </span>
+                <br />
+                <span className="select-none mr-4 opacity-30">6</span> {`}`}
+              </div>
+            </div>
+          ) : (
+            /* BACK VIEW: Dynamic Background */
+            <div
+              className="w-full h-full rounded-2xl shadow-2xl flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-300 relative overflow-hidden border border-black/5"
+              style={{ backgroundColor: activeTheme.bg }}
+            >
+              {/* Pattern effect */}
+              <div
+                className="absolute inset-0 opacity-10"
+                style={{
+                  backgroundImage: `radial-gradient(circle, ${activeTheme.tokens.key} 1px, transparent 1px)`,
+                  backgroundSize: "20px 20px",
+                }}
+              ></div>
+
+              <div className="z-10 bg-white p-4 rounded-xl shadow-lg">
+                <QrCode size={100} className="text-black" />
+              </div>
+              <p
+                className="z-10 text-xs mt-4 font-mono opacity-70"
+                style={{ color: activeTheme.text }}
+              >
+                Scan to connect
+              </p>
+            </div>
+          )}
         </div>
 
         <button
-          type="submit"
-          className="w-full mt-10 py-4 bg-[#6366F1] text-white rounded-2xl font-bold lg:hidden"
+          type="button"
+          onClick={handleCheckout}
+          className="w-full cursor-pointer max-w-md mt-auto lg:mt-72 py-4 bg-[#6366F1] text-white rounded-2xl font-bold hover:bg-[#5355d1] transition-all shadow-lg shadow-indigo-200"
         >
-          Proceed
-        </button>
-      </form>
-
-      {/* PREVIEW SECTION (Logic same as previous, but uses storedData for labels) */}
-      <div
-        className={`flex-1 bg-[#F9FAFB] p-6 md:p-12 flex flex-col items-center ${mobileStep === "form" ? "hidden lg:flex" : "flex"}`}
-      >
-        {/* ... (Preview Toggle and Card Code from previous step) ... */}
-        <div className="w-full max-w-md aspect-[1.6/1] bg-[#1e1e1e] rounded-2xl shadow-2xl p-6 font-mono text-sm text-white">
-          <div className="text-gray-400 mb-2">// Developer Business Card</div>
-          {`{`} <br />
-          <span className="pl-4">"name": "{storedData.fullName || "..."}"</span>
-          , <br />
-          <span className="pl-4">
-            "role": "{storedData.role || "..."}"
-          </span>{" "}
-          <br />
-          {`}`}
-        </div>
-
-        <button className="w-full max-w-md mt-auto py-4 bg-[#6366F1] text-white rounded-2xl font-bold">
           Checkout
         </button>
       </div>

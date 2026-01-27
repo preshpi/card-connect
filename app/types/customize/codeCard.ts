@@ -6,6 +6,7 @@ export const CodeCardSchema = z.object({
   email: z.string().email("Invalid email address"),
   link: z.string().url("Must be a valid URL").or(z.string().length(0)),
   availableForJob: z.string().min(1, "Please select an option"),
+  theme: z.string().default("vscode"),
 });
 
 export type CodeCardValues = z.infer<typeof CodeCardSchema>;
