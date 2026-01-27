@@ -4,16 +4,14 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  ChevronDown,
-  AlertCircle,
-  QrCode,
-  Check,
-} from "lucide-react";
+import { ArrowLeft, ChevronDown, AlertCircle, Check } from "lucide-react";
 import { CodeCardSchema, CodeCardValues } from "@/app/types/customize/codeCard";
 import { useBuilderStore } from "@/app/store/useBuilderStore";
 import { CODE_THEMES } from "@/app/utils/general";
+import { QRCodeSVG } from "qrcode.react";
+import Image from "next/image";
+import Logo from "@/public/assets/LogoWhite.svg";
+import BlackLogo from "@/public/assets/Logo.svg";
 
 const DetailsPage = () => {
   const router = useRouter();
@@ -39,7 +37,7 @@ const DetailsPage = () => {
       email: storedData.email,
       link: storedData.link,
       availableForJob: storedData.availableForJob,
-      theme: storedData.theme || "vscode", // Default to VS Code
+      theme: storedData.theme ? storedData.theme : "vscode", // Always provide a string
     },
   });
 
@@ -53,7 +51,7 @@ const DetailsPage = () => {
   }, [watch, setDetails]);
 
   // Get current theme data for rendering
-  const currentThemeKey = watch("theme") || "vscode";
+  const currentThemeKey = watch("theme") ?? "vscode";
   const activeTheme = CODE_THEMES[currentThemeKey];
 
   const onProceed = (data: CodeCardValues) => {
@@ -74,10 +72,10 @@ const DetailsPage = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen text-[#1B231F]">
+    <div className="flex flex-col pt-8 lg:flex-row min-h-screen text-[#1B231F]">
       {/* --- LEFT COLUMN: FORM --- */}
       <div
-        className={`flex-1 pt-8 ${mobileStep === "preview" ? "hidden lg:block" : "block"}`}
+        className={`flex-1 ${mobileStep === "preview" ? "hidden lg:block" : "block"}`}
       >
         <button
           type="button"
@@ -179,7 +177,7 @@ const DetailsPage = () => {
 
           <button
             type="submit"
-            className="w-full mt-8 py-4 bg-[#6366F1] text-white rounded-2xl font-bold lg:hidden shadow-lg shadow-indigo-200"
+            className="w-full my-8 py-4 cur bg-[#6366F1] text-white rounded-2xl font-bold lg:hidden shadow-lg shadow-indigo-200"
           >
             Proceed
           </button>
@@ -188,19 +186,20 @@ const DetailsPage = () => {
 
       {/* --- RIGHT COLUMN: PREVIEW --- */}
       <div
-        className={`flex-1 bg-[#F9FAFB] p-6 lg:p-12 flex flex-col items-center ${mobileStep === "form" ? "hidden lg:flex" : "flex"}`}
+        className={`flex-1 bg-[#F9FAFB] lg:p-12 flex flex-col items-center ${mobileStep === "form" ? "hidden lg:flex" : "flex"}`}
       >
         {/* Mobile Header */}
-        <div className="w-full flex items-center mb-8 lg:hidden">
+        <div className="w-full flex items-center lg:hidden">
           <button
+            type="button"
             onClick={handleMobileBack}
-            className="p-2 -ml-2 text-gray-600"
+            className="flex items-center gap-2 text-[#52525B] mb-8 hover:text-black transition-colors"
           >
-            <ArrowLeft size={20} />
+            <div className="p-1 rounded-full border-2 border-[#7269E3]">
+              <ArrowLeft size={16} color="#7269E3" />
+            </div>
+            <span className="font-medium">Back</span>
           </button>
-          <span className="flex-1 text-center font-bold mr-6 text-lg">
-            Preview
-          </span>
         </div>
 
         {/* View Toggle */}
@@ -317,7 +316,14 @@ const DetailsPage = () => {
               ></div>
 
               <div className="z-10 bg-white p-4 rounded-xl shadow-lg">
-                <QrCode size={100} className="text-black" />
+                {/* <QrCode size={100} className="text-black" /> */}
+                <QRCodeSVG
+                  value={storedData.link || "https://example.com"}
+                  size={100}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="L"
+                />
               </div>
               <p
                 className="z-10 text-xs mt-4 font-mono opacity-70"
@@ -325,6 +331,21 @@ const DetailsPage = () => {
               >
                 Scan to connect
               </p>
+
+              <div className="absolute bottom-0 left-0 px-5 py-3">
+                <Image
+                  src={
+                    CODE_THEMES.github_light.bg === activeTheme.bg
+                      ? BlackLogo
+                      : Logo
+                  }
+                  alt="logo"
+                  width={100}
+                  height={100}
+                  priority
+                  crossOrigin="anonymous"
+                />
+              </div>
             </div>
           )}
         </div>
