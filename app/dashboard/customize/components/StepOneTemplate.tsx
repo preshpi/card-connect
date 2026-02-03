@@ -13,8 +13,10 @@ const StepOneTemplate = () => {
   const { selectedTemplate, setTemplate } = useBuilderStore();
 
   const handleContinue = () => {
-    if (selectedTemplate) {
+    if (selectedTemplate === "code") {
       router.push("/dashboard/customize/create-codeCard"); // Move to Step 2
+    } else if (selectedTemplate === "plain") {
+      router.push("/dashboard/customize/create-plainCard"); // Move to Step 2
     }
   };
 

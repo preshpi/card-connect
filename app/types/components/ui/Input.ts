@@ -11,7 +11,7 @@ export interface InputProps {
   onChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => void;
   pattern?: string;
   password?: boolean;
@@ -28,4 +28,5 @@ export interface InputProps {
   maxLength?: number;
   readOnly?: boolean;
   options?: string[];
+  registration?: any;
 }

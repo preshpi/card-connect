@@ -62,3 +62,66 @@ export const CODE_THEMES: Record<string, any> = {
     },
   },
 };
+
+export function isColorLight(color: string) {
+  const hex = color.replace("#", "");
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 155;
+}
+
+export const PATTERNS = [
+  {
+    id: "zebra",
+    label: "Zebra",
+    css: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,1) 10px, rgba(255,255,255,1) 20px)",
+  },
+  {
+    id: "geo",
+    label: "Geometric",
+    css: "repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(255,255,255,1) 5px, rgba(255,255,255,1) 10px)",
+  },
+  {
+    id: "lines",
+    label: "Lines",
+    css: "repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(255,255,255,1) 20px)",
+  },
+  {
+    id: "carbon",
+    label: "Carbon",
+    css: "linear-gradient(45deg, rgba(255,255,255,1) 25%, transparent 25%, transparent 75%, rgba(255,255,255,1) 75%, rgba(255,255,255,1)), linear-gradient(45deg, rgba(255,255,255,1) 25%, transparent 25%, transparent 75%, rgba(255,255,255,1) 75%, rgba(255,255,255,1))",
+    size: "20px 20px",
+  },
+  {
+    id: "diagonal",
+    label: "Blueprint",
+    css: "repeating-linear-gradient(45deg, rgba(255,255,255,1), rgba(255,255,255,1) 1px, transparent 1px, transparent 10px)",
+    size: "auto",
+  },
+  {
+    id: "sparkles",
+    label: "Sparkles",
+    css: "radial-gradient(circle, rgba(255,255,255,1) 1px, transparent 1px), radial-gradient(circle, rgba(255,255,255,1) 2px, transparent 2px)",
+    size: "60px 60px",
+  },
+  {
+    id: "hearts",
+    label: "Hearts",
+    css: "radial-gradient(circle at 50% 40%, rgba(255,255,255,1) 10%, transparent 11%), radial-gradient(circle at 40% 50%, rgba(255,255,255,1) 10%, transparent 11%), radial-gradient(circle at 60% 50%, rgba(255,255,255,1) 10%, transparent 11%)",
+    size: "40px 40px",
+  },
+  {
+    id: "dots",
+    label: "Terminal",
+    css: "radial-gradient(rgba(255,255,255,1) 1.5px, transparent 1.5px)",
+    size: "15px 15px",
+  },
+  {
+    id: "grid",
+    label: "Grid",
+    css: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
+    size: "25px 25px",
+  },
+];
