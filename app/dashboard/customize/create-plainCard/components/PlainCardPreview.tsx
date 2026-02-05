@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import CardUI from "./CardUI";
 import { isColorLight } from "@/app/utils/general";
 
-export default function PlainCardPreview({ values, onBack }: any) {
+export default function PlainCardPreview({ values, onBack, onCheckout }: any) {
   const [view, setView] = useState<"front" | "back">("front");
 
   return (
@@ -21,13 +21,13 @@ export default function PlainCardPreview({ values, onBack }: any) {
       <div className="bg-gray-200 p-1 rounded-full flex w-full max-w-xs mb-10">
         <button
           onClick={() => setView("front")}
-          className={`flex-1 py-2 rounded-full text-sm ${view === "front" ? "bg-white shadow" : ""}`}
+          className={`flex-1 py-2 cursor-pointer rounded-full text-sm ${view === "front" ? "bg-white shadow" : ""}`}
         >
           Front View
         </button>
         <button
           onClick={() => setView("back")}
-          className={`flex-1 py-2 rounded-full text-sm ${view === "back" ? "bg-white shadow" : ""}`}
+          className={`flex-1 py-2 cursor-pointer rounded-full text-sm ${view === "back" ? "bg-white shadow" : ""}`}
         >
           Back View
         </button>
@@ -73,7 +73,10 @@ export default function PlainCardPreview({ values, onBack }: any) {
         )}
       </div>
 
-      <button className="w-full max-w-md mt-auto py-4 bg-indigo-600 text-white rounded-2xl font-bold">
+      <button
+        onClick={onCheckout}
+        className="w-full max-w-md mt-64 py-4 bg-[#7269E3] text-white shadow-indigo-100 cursor-pointer hover:bg-[#5355d1] rounded-full border-[#7269E3] inner-shadow-md border font-bold"
+      >
         Checkout
       </button>
     </div>

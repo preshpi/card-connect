@@ -16,6 +16,8 @@ interface CardUIProps {
     logoFile: File | string | null;
     text: string;
     imageSize: number;
+    logoPosition: string;
+    logoSpacing: number;
   };
 }
 
@@ -29,6 +31,25 @@ const CardUI = ({ values }: CardUIProps) => {
   // Extract numeric font weight from the string "400 (Normal)"
   const fontWeight = values.fontWidth.split(" ")[0];
   const activePattern = PATTERNS.find((p) => p.id === values.pattern);
+
+  // Determine layout based on logo position
+  const getLayoutClasses = () => {
+    const position = values.logoPosition || "center";
+    switch (position) {
+      case "top":
+        return "flex-col items-center";
+      case "bottom":
+        return "flex-col-reverse items-center";
+      case "left":
+        return "flex-row items-center";
+      case "right":
+        return "flex-row-reverse items-center";
+      case "center":
+      default:
+        return "flex-col items-center";
+    }
+  };
+
   return (
     <div
       className="w-full h-full rounded-2xl shadow-2xl relative overflow-hidden flex flex-col items-center justify-center border border-black/5 animate-in fade-in zoom-in-95 duration-300"
@@ -48,17 +69,23 @@ const CardUI = ({ values }: CardUIProps) => {
         }}
       />
 
-      {/* TODO:: FIX IMAGE SIZE */}
-      {/* --- CENTER TEXT LAYER --- */}
-      <div className="z-10 text-center px-8">
+      {/* --- CONTENT LAYER --- */}
+      <div
+        className={`z-10 flex ${getLayoutClasses()} px-8`}
+        style={{ gap: `${values.logoSpacing || 16}px` }}
+      >
         {values.hasLogo === "yes" && logoSrc && (
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center shrink-0">
             <Image
               src={logoSrc}
               alt="User Logo"
-              width={values.imageSize || 70}
-              height={values.imageSize || 70}
-              className=" w-auto object-contain"
+              width={values.imageSize || 100}
+              height={values.imageSize || 100}
+              style={{
+                width: `${values.imageSize || 100}px`,
+                height: `${values.imageSize || 100}px`,
+              }}
+              className="object-contain"
             />
           </div>
         )}
@@ -69,6 +96,11 @@ const CardUI = ({ values }: CardUIProps) => {
             style={{
               fontSize: values.fontSize, // e.g., "16 px"
               fontWeight: fontWeight, // e.g., "400"
+              textAlign:
+                values.logoPosition === "left" ||
+                values.logoPosition === "right"
+                  ? "left"
+                  : "center",
             }}
           >
             {values.text || "Your Text Here"}

@@ -79,3 +79,8 @@ body {
   background: #ffffff;
   color: #110011;
 }
+
+button {
+  cursor: pointer;
+  outline: none;
+}

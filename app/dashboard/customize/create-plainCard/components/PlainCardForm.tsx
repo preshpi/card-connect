@@ -114,13 +114,27 @@ export default function PlainCardForm({ methods, onProceed }: any) {
           )}
 
           {hasLogo === "yes" && (
-            <InputField
-              label="Image Size (px)"
-              placeholder="e.g., 40"
-              type="number"
-              registration={register("imageSize", { valueAsNumber: true })}
-              error={errors.imageSize?.message}
-            />
+            <>
+              <InputField
+                label="Image Size (px)"
+                placeholder="e.g., 40"
+                type="number"
+                registration={register("imageSize", { valueAsNumber: true })}
+                error={errors.imageSize?.message}
+              />
+              <SelectField
+                label="Logo Position"
+                registration={register("logoPosition")}
+                options={["center", "top", "bottom", "left", "right"]}
+              />
+              <InputField
+                label="Spacing Between Logo & Text (px)"
+                placeholder="e.g., 16"
+                type="number"
+                registration={register("logoSpacing", { valueAsNumber: true })}
+                error={errors.logoSpacing?.message}
+              />
+            </>
           )}
         </div>
 

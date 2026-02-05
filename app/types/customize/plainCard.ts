@@ -5,13 +5,17 @@ export const PlainCardSchema = z.object({
   patternOpacity: z.number().min(0).max(100).default(30),
   hasLogo: z.enum(["yes", "no"]).default("no"),
   logoFile: z.any().optional(),
+  logoPosition: z
+    .enum(["top", "bottom", "left", "right", "center"])
+    .default("center"),
+  logoSpacing: z.number().min(0).max(100).default(16),
   bgColor: z.string().min(4, "Invalid color").default("#1A2E26"),
   fontSize: z.string().default("16 px"),
   fontWidth: z.string().default("400 (Normal)"),
   fontFamily: z.string().default("Arial"),
   link: z.string().default("https://example.com"),
   text: z.string().max(100, "Text too long").default(""),
-  imageSize: z.number().default(500),
+  imageSize: z.number(),
 });
 
 export type PlainCardValues = z.infer<typeof PlainCardSchema>;
