@@ -27,7 +27,7 @@ const DetailsPage = () => {
     getValues,
     formState: { errors },
   } = useForm<CodeCardValues>({
-    resolver: zodResolver(CodeCardSchema),
+    resolver: zodResolver(CodeCardSchema as any), // Type assertion to bypass zod type issues
     defaultValues: {
       fullName: "",
       role: "",

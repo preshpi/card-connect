@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -34,7 +35,9 @@ const MOCK_DATA = {
 };
 
 const Analytics = () => {
-  const [activeTab, setActiveTab] = useState("views");
+  const [activeTab, setActiveTab] = useState<"views" | "clicks" | "shares">(
+    "views",
+  );
   const [timeFilter, setTimeFilter] = useState("Daily");
   const currentData = MOCK_DATA[activeTab];
 
@@ -54,7 +57,7 @@ const Analytics = () => {
         borderWidth: 1,
         padding: 10,
         textStyle: { color: "#374151", fontSize: 14 },
-        formatter: (params) => {
+        formatter: (params: any) => {
           const item = params[0];
           return `
             <div class="font-bold text-gray-900 text-lg mb-1 leading-tight">
@@ -161,7 +164,7 @@ const Analytics = () => {
               {["views", "clicks", "shares"].map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab)}
+                  onClick={() => setActiveTab(tab as any)}
                   className={`pb-2 md:pb-1 text-sm font-medium capitalize transition-all border-b-2 ${
                     activeTab === tab
                       ? "text-gray-900 border-gray-900"
@@ -213,7 +216,7 @@ const Analytics = () => {
 };
 
 // Updated Stats Card for Mobile Snap
-const StatsCard = ({ label, value, icon }) => (
+const StatsCard = ({ label, value, icon }: any) => (
   <div
     className="
     min-w-[85%] md:min-w-0 snap-center 

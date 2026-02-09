@@ -69,6 +69,10 @@ const Capture = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Ensure activeTheme always has a valid value with fallback
+  const activeTheme =
+    CODE_THEMES[codeCardData.theme || "vscode"] || CODE_THEMES.vscode;
+
   const uploadImageToCloudinary = async (imageData: string) => {
     try {
       if (!imageData || !imageData.startsWith("data:image/")) {
@@ -187,9 +191,6 @@ const Capture = () => {
       setSwitchCard(true);
     }
   };
-
-  // Get active theme for code card
-  const activeTheme = CODE_THEMES[codeCardData.theme || "vscode"];
 
   // Plain Card Components
   const PlainCardFront = () => {
@@ -384,12 +385,12 @@ const Capture = () => {
     return (
       <div
         className="w-full h-full rounded-2xl shadow-2xl flex flex-col items-center justify-center relative overflow-hidden border border-black/5"
-        style={{ backgroundColor: activeTheme.bg }}
+        style={{ backgroundColor: activeTheme?.bg }}
       >
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: `radial-gradient(circle, ${activeTheme.tokens.key} 1px, transparent 1px)`,
+            backgroundImage: `radial-gradient(circle, ${activeTheme?.tokens.key} 1px, transparent 1px)`,
             backgroundSize: "20px 20px",
           }}
         ></div>

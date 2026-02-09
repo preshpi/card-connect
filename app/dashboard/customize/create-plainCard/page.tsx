@@ -27,7 +27,7 @@ const PlainCard = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<PlainCardValues>({
-    resolver: zodResolver(PlainCardSchema),
+    resolver: zodResolver(PlainCardSchema as any), // Type assertion to bypass zod type issues
     defaultValues: {
       pattern: "waves",
       patternOpacity: 32,
