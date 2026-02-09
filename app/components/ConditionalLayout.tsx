@@ -16,7 +16,8 @@ export default function ConditionalLayout({
     pathname === "/signup" ||
     pathname === "/login" ||
     pathname === "/forgot-password" ||
-    pathname === "/reset-password";
+    pathname === "/reset-password" ||
+    pathname.includes("/dashboard");
 
   return (
     <>

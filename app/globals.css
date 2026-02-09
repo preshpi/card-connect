@@ -72,8 +72,10 @@ html {
   padding: 0;
   box-sizing: border-box;
   font-family: "sora", "work-sans", sans-serif;
+  color: #110011;
 }
 
 body {
   background: #ffffff;
+  color: #110011;
 }
