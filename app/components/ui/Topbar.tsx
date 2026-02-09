@@ -39,6 +39,16 @@ const menuItems: MenuItem[] = [
     icon: "/assets/icons/Eye.svg",
     href: "/dashboard/customize/create-codeCard",
   },
+  {
+    label: "Customize",
+    icon: "/assets/icons/Eye.svg",
+    href: "/dashboard/customize/create-plainCard",
+  },
+  {
+    label: "Capture",
+    icon: "/assets/icons/Camera.svg",
+    href: "/dashboard/customize/capture",
+  },
 ];
 
 const Topbar = () => {

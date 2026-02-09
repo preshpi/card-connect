@@ -49,7 +49,7 @@ const PlainCard = () => {
     const valid = await trigger();
     if (valid) {
       setPlainDetails(getValues());
-      router.push("/dashboard/capture");
+      router.push("/dashboard/customize/capture");
     }
   };
   const onProceed = () => setMobileStep("preview");

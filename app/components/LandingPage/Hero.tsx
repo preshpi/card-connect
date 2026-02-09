@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "../ui/Button";
-import { Link } from "lucide-react";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -52,9 +52,12 @@ const Hero = () => {
 
         {/* CTA Button */}
         <Link href="/signup">
-          <Button className="bg-[#7269E3] cursor-pointer text-white lg:py-5 py-4 shadow px-4 max-w-62.25">
+          <button
+            type="button"
+            className="bg-[#7269E3] cursor-pointer rounded-full text-white lg:py-5 py-4 shadow px-4 max-w-62.25"
+          >
             Build My Smart Card
-          </Button>
+          </button>
         </Link>
       </div>
     </div>

@@ -60,7 +60,7 @@ const DetailsPage = () => {
     const valid = await trigger();
     if (valid) {
       setDetails(getValues());
-      router.push("/dashboard/capture");
+      router.push("/dashboard/customize/capture");
     }
   };
 

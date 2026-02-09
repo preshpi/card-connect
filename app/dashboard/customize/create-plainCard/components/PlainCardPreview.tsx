@@ -4,6 +4,9 @@ import { QRCodeSVG } from "qrcode.react";
 import { ArrowLeft } from "lucide-react";
 import CardUI from "./CardUI";
 import { isColorLight } from "@/app/utils/general";
+import Image from "next/image";
+import Logo from "@/public/assets/LogoWhite.svg";
+import BlackLogo from "@/public/assets/Logo.svg";
 
 export default function PlainCardPreview({ values, onBack, onCheckout }: any) {
   const [view, setView] = useState<"front" | "back">("front");
@@ -69,6 +72,17 @@ export default function PlainCardPreview({ values, onBack, onCheckout }: any) {
             >
               Scan to connect
             </p>
+
+            <div className="absolute bottom-0 left-0 px-5 py-3">
+              <Image
+                src={values.bgColor === "#FFFFFF" ? BlackLogo : Logo}
+                alt="logo"
+                width={100}
+                height={100}
+                priority
+                crossOrigin="anonymous"
+              />
+            </div>
           </div>
         )}
       </div>
