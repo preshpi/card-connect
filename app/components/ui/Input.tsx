@@ -1,4 +1,4 @@
-import { InputProps } from "@/app/types/components/ui/input";
+import { InputProps } from "@/app/types/components/ui/Input";
 import Image from "next/image";
 import { forwardRef, useState } from "react";
 
@@ -10,6 +10,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       name,
       id,
       type,
+      registration,
       additionalClasses,
       placeholder,
       onChange,
@@ -27,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       autoComplete,
       options,
     },
-    ref
+    ref,
   ) => {
     const [visible, setVisible] = useState<boolean>(false);
 
@@ -58,6 +59,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               placeholder={placeholder}
               disabled={disabled}
               onChange={onChange}
+              {...registration}
               {...additionalAttributes}
             />
             {password && (
@@ -124,18 +126,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {options.map(
               (
                 option: string,
-                index: number // Add typing here
+                index: number, // Add typing here
               ) => (
                 <option key={index} value={option}>
                   {option}
                 </option>
-              )
+              ),
             )}
           </select>
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";
