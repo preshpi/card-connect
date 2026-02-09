@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, User } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, User } from "lucide-react";
+import Link from "next/link";
 
-export default function Profile() {
+export default function UpdateProfile() {
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -38,12 +39,31 @@ export default function Profile() {
 
     return (
         <div className="w-full min-h-screen max-w-md px-4 py-8 lg:max-w-lg">
+            <Link href={"/dashboard/settings"}>
+                <button className="hidden md:flex items-center gap-2 text-lg font-medium text-[#1D1F2C] transition cursor-pointer my-4">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full border text-[#7269D1] border-[#7269D1]">
+                        <ArrowLeft size={14} />
+                    </span>
+                    Back
+                </button>
+            </Link>
             {/* Card Container */}
             <div className="rounded-lg py-6 md:py-8">
                 {/* Header */}
-                <h1 className="flex justify-center md:block text-xl md:text-2xl font-bold text-[#1D1F2C] mb-8">
-                    Profile Details
-                </h1>
+                <div className="flex items-center mb-4 gap-12">
+                    <Link
+                        href={"/dashboard/settings"}
+                        className="block md:hidden"
+                    >
+                        <button className="flex items-center justify-start gap-2 text-xl font-medium text-[#1D1F2C] transition cursor-pointer my-4">
+                            <ArrowLeft size={28} />
+                        </button>
+                    </Link>
+
+                    <h1 className="text-lg md:text-2xl font-medium text-[#1D1F2C] text-center md:mb-8">
+                        Update Details
+                    </h1>
+                </div>
 
                 {/* Profile Avatar */}
                 <div className="flex justify-left mb-8">
@@ -71,7 +91,7 @@ export default function Profile() {
                                 placeholder="Enter name"
                                 value={formData.firstName}
                                 onChange={handleChange}
-                                className="px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                className="px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7269D1] focus:border-transparent transition-all"
                             />
                         </div>
 
@@ -90,7 +110,7 @@ export default function Profile() {
                                 placeholder="Enter name"
                                 value={formData.lastName}
                                 onChange={handleChange}
-                                className="px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                className="px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7269D1] focus:border-transparent transition-all"
                             />
                         </div>
                     </div>
@@ -110,7 +130,7 @@ export default function Profile() {
                             value={formData.bio}
                             onChange={handleChange}
                             rows={1}
-                            className="px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                            className="px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7269D1] focus:border-transparent transition-all resize-none"
                         />
                     </div>
 
@@ -129,7 +149,7 @@ export default function Profile() {
                             placeholder="Enter email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                            className="px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7269D1] focus:border-transparent transition-all"
                         />
                     </div>
 
@@ -149,7 +169,7 @@ export default function Profile() {
                                 placeholder="Enter password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all pr-10"
+                                className="w-full px-6 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7269D1] focus:border-transparent transition-all pr-10"
                             />
                             <button
                                 type="button"
