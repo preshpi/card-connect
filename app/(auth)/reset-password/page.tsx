@@ -4,22 +4,54 @@ import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import Logo from "../../../public/assets/Logo.svg";
+import { useResetPassword } from "@/app/services/auth";
+import { getApiErrorMessage } from "@/app/utils/apiError";
+import OtpInput from "@/app/components/ui/OtpInput";
 
 export default function ResetPasswordPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
+    email: searchParams.get("email") || "",
+    otp: "",
     newPassword: "",
     confirmPassword: "",
   });
+  const { mutate: resetPassword, isPending } = useResetPassword();
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (formData.newPassword !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match");
       return;
     }
-    console.log("Password reset submitted");
+
+    resetPassword(
+      {
+        email: formData.email,
+        otp: formData.otp,
+        password: formData.newPassword,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Password reset successful");
+          router.push("/login");
+        },
+        onError: (err: unknown) => {
+          const message = getApiErrorMessage(
+            err,
+            "Failed to reset password. Please try again.",
+          );
+          toast.error(message);
+        },
+      },
+    );
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +59,13 @@ export default function ResetPasswordPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleOtpChange = (otp: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      otp,
+    }));
   };
 
   return (
@@ -56,7 +95,44 @@ export default function ResetPasswordPage() {
         </div>
 
         {/* Form Fields */}
-        <div className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          {/* Email Field */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter email address"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
+            />
+          </div>
+
+          {/* OTP Field */}
+          <div>
+            <label
+              htmlFor="reset-otp-0"
+              className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
+            >
+              OTP Code
+            </label>
+            <OtpInput
+              value={formData.otp}
+              onChange={handleOtpChange}
+              idPrefix="reset-otp"
+              name="otp"
+              length={6}
+              disabled={isPending}
+            />
+          </div>
+
           {/* New Password Field */}
           <div>
             <label
@@ -123,12 +199,13 @@ export default function ResetPasswordPage() {
 
           {/* Submit Button */}
           <button
-            onClick={handleSubmit}
+            type="submit"
+            disabled={isPending}
             className="w-full bg-[#7269E3] hover:bg-[#7269D1] text-white font-medium py-3 rounded-full transition duration-200 cursor-pointer shadow-sm"
           >
-            Update Password
+            {isPending ? "Updating..." : "Update Password"}
           </button>
-        </div>
+        </form>
       </div>
     </main>
   );

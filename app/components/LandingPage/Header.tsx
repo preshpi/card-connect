@@ -44,7 +44,7 @@ const Header = () => {
 
         {/* Desktop CTA */}
         <div className="hidden md:block">
-          <Link href="/dashboard/links">
+          <Link href="/signup">
             <button className="bg-[#7269E3] cursor-pointer text-white px-6 rounded-full py-4 text-sm">
               Create an account
             </button>
