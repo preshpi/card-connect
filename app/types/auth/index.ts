@@ -28,6 +28,18 @@ export interface ResetPasswordRequest {
   newPassword: string;
 }
 
+export interface ChangePasswordRequest {
+  current_password: string;
+  new_password: string;
+}
+
+export interface ProfileUpdateRequest {
+  fullName?: string;
+  bio?: string;
+  email?: string;
+  emailChangeOtp?: string;
+}
+
 export interface AuthTokensResponse {
   accessToken: string;
   refreshToken: string;
@@ -44,8 +56,11 @@ export interface User {
   email: string;
   firstname: string;
   lastname: string;
+  fullName?: string;
+  bio?: string;
   phone: string;
   emailVerified: boolean;
+  username?: string;
   createdAt: string;
 }
 

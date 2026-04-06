@@ -4,7 +4,9 @@ type RetryableRequestConfig = NonNullable<AxiosError["config"]> & {
   _retry?: boolean;
 };
 
-const API_BASE_URL = "https://cardconnect-api.collinsadi.xyz/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://cardconnect-api.collinsadi.xyz/api";
 
 class ApiClient {
   private client: AxiosInstance;

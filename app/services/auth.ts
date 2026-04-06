@@ -7,6 +7,7 @@ import {
   ResendVerifyEmailRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
+  ChangePasswordRequest,
   AuthResponse,
   UserResponse,
   MessageResponse,
@@ -109,6 +110,18 @@ export const useResetPassword = () => {
       const response = await apiClient
         .getClient()
         .post("/auth/reset-password", data);
+      return response.data;
+    },
+  });
+};
+
+// Change Password Hook
+export const useChangePassword = () => {
+  return useMutation<MessageResponse, Error, ChangePasswordRequest>({
+    mutationFn: async (data) => {
+      const response = await apiClient
+        .getClient()
+        .post("/settings/change-password", data);
       return response.data;
     },
   });
