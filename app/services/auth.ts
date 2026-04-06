@@ -120,7 +120,14 @@ export const useLogout = () => {
 
   return useMutation<MessageResponse, Error, void>({
     mutationFn: async () => {
-      const response = await apiClient.getClient().post("/auth/logout");
+      const refreshToken =
+        typeof window !== "undefined"
+          ? localStorage.getItem("refreshToken")
+          : null;
+
+      const response = await apiClient
+        .getClient()
+        .post("/auth/logout", { refreshToken });
       return response.data;
     },
     onSuccess: () => {

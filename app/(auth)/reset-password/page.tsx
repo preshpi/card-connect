@@ -36,7 +36,7 @@ export default function ResetPasswordPage() {
       {
         email: formData.email,
         otp: formData.otp,
-        password: formData.newPassword,
+        newPassword: formData.newPassword,
       },
       {
         onSuccess: () => {
