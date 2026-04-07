@@ -38,6 +38,7 @@ export interface ProfileUpdateRequest {
   bio?: string;
   email?: string;
   emailChangeOtp?: string;
+  profileImage?: string;
 }
 
 export interface AuthTokensResponse {
@@ -58,6 +59,7 @@ export interface User {
   lastname: string;
   fullName?: string;
   bio?: string;
+  profileImage?: string;
   phone: string;
   emailVerified: boolean;
   username?: string;

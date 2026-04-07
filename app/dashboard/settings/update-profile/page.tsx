@@ -1,30 +1,72 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ArrowLeft, User } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { ArrowLeft, Camera, Loader2, User } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { toast } from "sonner";
 import { useGetUser } from "@/app/services/auth";
 import { useUpdateProfile } from "@/app/services/profile";
+import type { ProfileUpdateRequest } from "@/app/types/auth";
 import { getApiErrorMessage } from "@/app/utils/apiError";
 import OtpInput from "@/app/components/ui/OtpInput";
+
+const CLOUDINARY_UPLOAD_URL =
+  "https://api.cloudinary.com/v1_1/dpokiomqq/image/upload";
+const CLOUDINARY_UPLOAD_PRESET = "card_connect";
 
 type ProfileFormProps = {
   initialProfile: {
     fullName: string;
     bio: string;
     email: string;
+    profileImage?: string;
   };
 };
 
+async function uploadImageToCloudinary(file: File) {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Please select an image file.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `Upload failed with status ${response.status}: ${errorText}`,
+    );
+  }
+
+  const data = await response.json();
+
+  if (!data?.secure_url) {
+    throw new Error("Cloudinary did not return an image URL.");
+  }
+
+  return data.secure_url as string;
+}
+
 function ProfileForm({ initialProfile }: ProfileFormProps) {
   const { mutate: updateProfile, isPending } = useUpdateProfile();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [formData, setFormData] = useState({
     fullName: initialProfile.fullName,
     bio: initialProfile.bio,
     email: initialProfile.email,
     emailChangeOtp: "",
   });
+  const [profileImageUrl, setProfileImageUrl] = useState(
+    initialProfile.profileImage || "",
+  );
+  const [isImageUploading, setIsImageUploading] = useState(false);
   const [emailChangePending, setEmailChangePending] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
 
@@ -56,6 +98,31 @@ function ProfileForm({ initialProfile }: ProfileFormProps) {
     }));
   };
 
+  const handleProfileImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    setIsImageUploading(true);
+
+    try {
+      const uploadedImageUrl = await uploadImageToCloudinary(file);
+      setProfileImageUrl(uploadedImageUrl);
+      toast.success("Profile image uploaded successfully");
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Failed to upload profile image."));
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } finally {
+      setIsImageUploading(false);
+    }
+  };
+
   const handleSaveChanges = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -75,11 +142,14 @@ function ProfileForm({ initialProfile }: ProfileFormProps) {
     const payload = {
       fullName: formData.fullName.trim(),
       bio: formData.bio.trim(),
+      ...(profileImageUrl && profileImageUrl !== initialProfile.profileImage
+        ? { profileImage: profileImageUrl }
+        : {}),
       ...(emailChanged ? { email: trimmedEmail } : {}),
       ...(emailChangePending && formData.emailChangeOtp.trim()
         ? { emailChangeOtp: formData.emailChangeOtp.trim() }
         : {}),
-    };
+    } satisfies ProfileUpdateRequest;
 
     updateProfile(payload, {
       onSuccess: () => {
@@ -108,6 +178,56 @@ function ProfileForm({ initialProfile }: ProfileFormProps) {
 
   return (
     <form onSubmit={handleSaveChanges} className="space-y-6">
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-medium text-[#1D1F2C]">
+          Profile Avatar
+        </span>
+        <div className="flex items-center gap-4">
+          <label
+            htmlFor="profileImage"
+            className="group relative flex h-20 w-20 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-dashed border-gray-300 bg-gray-100 transition hover:border-[#7269D1]"
+          >
+            {profileImageUrl ? (
+              <Image
+                src={profileImageUrl}
+                alt="Profile avatar preview"
+                width={80}
+                height={80}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <User className="h-8 w-8 text-gray-400" />
+            )}
+
+            <span className="absolute inset-0 flex items-center justify-center bg-black/0 text-white opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
+              <Camera className="h-4 w-4" />
+            </span>
+          </label>
+
+          <div className="min-w-0 flex-1">
+            <input
+              ref={fileInputRef}
+              id="profileImage"
+              name="profileImage"
+              type="file"
+              accept="image/*"
+              onChange={handleProfileImageChange}
+              className="hidden"
+            />
+            <p className="text-sm font-medium text-[#1D1F2C]">
+              {isImageUploading ? "Uploading image..." : "Upload a new photo"}
+            </p>
+            <p className="text-xs text-gray-500">
+              JPG, PNG, and WebP files are supported.
+            </p>
+          </div>
+
+          {isImageUploading && (
+            <Loader2 className="h-5 w-5 animate-spin text-[#7269D1]" />
+          )}
+        </div>
+      </div>
+
       <div className="flex flex-col">
         <label
           htmlFor="fullName"
@@ -223,6 +343,7 @@ export default function UpdateProfile() {
       fullName,
       bio: user?.bio || "",
       email: user?.email || "",
+      profileImage: user?.profileImage || "",
     };
   }, [userData]);
 
@@ -259,16 +380,9 @@ export default function UpdateProfile() {
           </h1>
         </div>
 
-        {/* Profile Avatar */}
-        <div className="flex justify-left mb-8">
-          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-            <User className="w-8 h-8 text-gray-400" />
-          </div>
-        </div>
-
         {/* Form */}
         <ProfileForm
-          key={`${currentProfile.fullName}-${currentProfile.bio}-${currentProfile.email}`}
+          key={`${currentProfile.fullName}-${currentProfile.bio}-${currentProfile.email}-${currentProfile.profileImage}`}
           initialProfile={currentProfile}
         />
       </div>

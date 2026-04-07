@@ -83,7 +83,7 @@ export const useGetUser = () => {
   return useQuery<UserResponse, Error>({
     queryKey: AUTH_QUERY_KEYS.user,
     queryFn: async () => {
-      const response = await apiClient.getClient().get("/auth/user");
+      const response = await apiClient.getClient().get("/auth/me");
       return response.data;
     },
     enabled: !!localStorage.getItem("accessToken"),
