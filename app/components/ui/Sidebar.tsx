@@ -2,11 +2,12 @@
 
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useLogout } from "@/app/services/auth";
+import { useGetUser, useLogout } from "@/app/services/auth";
+import { useAuthStore } from "@/app/store/useAuthStore";
 import { getApiErrorMessage } from "@/app/utils/apiError";
 
 type MenuItem = {
@@ -31,11 +32,11 @@ const menuItems: MenuItem[] = [
     icon: "/assets/icons/Edit.svg",
     href: "/dashboard/customize",
   },
-  {
-    label: "Profile",
-    icon: "/assets/icons/Profile.svg",
-    href: "/dashboard/profile",
-  },
+  // {
+  //   label: "Profile",
+  //   icon: "/assets/icons/Profile.svg",
+  //   href: "/dashboard/profile",
+  // },
   {
     label: "Settings",
     icon: "/assets/icons/Setting.svg",
@@ -49,6 +50,25 @@ const Sidebar = () => {
   const router = useRouter();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
   const activeItem = menuItems.find((item) => pathname === item.href);
+  const { data: userData } = useGetUser();
+  const storedUser = useAuthStore((state) => state.user);
+  const setStoredUser = useAuthStore((state) => state.setUser);
+
+  useEffect(() => {
+    if (userData?.data) {
+      setStoredUser(userData.data);
+    }
+  }, [setStoredUser, userData?.data]);
+
+  const displayUser = userData?.data ?? storedUser;
+  const fullName = displayUser?.fullName?.trim() || "User";
+  const initials =
+    fullName
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((name) => name[0]?.toUpperCase())
+      .join("") || "U";
 
   const handleLogout = () => {
     logout(undefined, {
@@ -116,15 +136,15 @@ const Sidebar = () => {
         <div className="space-y-8">
           <div className="flex items-center gap-x-2 bg-[#5D53DF] py-3 px-4 rounded-lg">
             <p className="bg-[#80D68D] px-3 py-2 rounded-lg text-white font-bold text-sm">
-              P
+              {initials}
             </p>
-            <p className="text-white font-semibold text-sm">Precious Ijeoma</p>
+            <p className="text-white font-semibold text-sm">{fullName}</p>
           </div>
 
           <div className="space-y-4">
-            <div className="text-white text-sm font-medium tracking-wide">
+            {/* <div className="text-white text-sm font-medium tracking-wide">
               MAIN MENU
-            </div>
+            </div> */}
 
             <nav className="flex flex-col gap-2">
               {menuItems.map((item) => {

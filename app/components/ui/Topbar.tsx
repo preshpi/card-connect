@@ -1,67 +1,71 @@
 "use client";
 import React from "react";
 import { usePathname } from "next/navigation";
+import { useGetUser } from "@/app/services/auth";
+import Image from "next/image";
 
 type MenuItem = {
   label: string;
   icon: string;
-  href: string;
+  hrefPrefix: string;
 };
 
 const menuItems: MenuItem[] = [
   {
     label: "My Link",
     icon: "/assets/icons/Category.svg",
-    href: "/dashboard/links",
+    hrefPrefix: "/dashboard/links",
   },
   {
     label: "Analytics",
     icon: "/assets/icons/Chart.svg",
-    href: "/dashboard/analytics",
-  },
-  {
-    label: "Customize",
-    icon: "/assets/icons/Edit.svg",
-    href: "/dashboard/customize",
-  },
-  {
-    label: "Profile",
-    icon: "/assets/icons/Profile.svg",
-    href: "/dashboard/profile",
-  },
-  {
-    label: "Settings",
-    icon: "/assets/icons/Setting.svg",
-    href: "/dashboard/settings",
-  },
-  {
-    label: "Customize",
-    icon: "/assets/icons/Eye.svg",
-    href: "/dashboard/customize/create-codeCard",
-  },
-  {
-    label: "Customize",
-    icon: "/assets/icons/Eye.svg",
-    href: "/dashboard/customize/create-plainCard",
+    hrefPrefix: "/dashboard/analytics",
   },
   {
     label: "Capture",
     icon: "/assets/icons/Camera.svg",
-    href: "/dashboard/customize/capture",
+    hrefPrefix: "/dashboard/customize/capture",
+  },
+  {
+    label: "Customize",
+    icon: "/assets/icons/Edit.svg",
+    hrefPrefix: "/dashboard/customize",
+  },
+  {
+    label: "Profile",
+    icon: "/assets/icons/Profile.svg",
+    hrefPrefix: "/dashboard/profile",
+  },
+  {
+    label: "Settings",
+    icon: "/assets/icons/Setting.svg",
+    hrefPrefix: "/dashboard/settings",
   },
 ];
 
 const Topbar = () => {
+  const { data: userData } = useGetUser();
+
   const pathname = usePathname();
-  // Find the menu item whose href matches the current route
-  const currentMenu = menuItems.find((item) => pathname.endsWith(item.href));
+  // Match by route prefix so sub-routes inherit the same topbar label/icon.
+  const currentMenu = menuItems.find((item) =>
+    pathname.startsWith(item.hrefPrefix),
+  );
   const label = currentMenu ? currentMenu.label : "Dashboard";
 
   return (
     <div className="h-16 border-b border-[#EAECF0] text-[#1D1F2C]">
       <div className="flex items-center justify-between px-6 h-full">
         <p className="font-bold text-[#1D1F2C]">{label}</p>
-        <div className="h-10 w-10 border rounded-full bg-amber-400"></div>
+        <div className="h-10 w-10 border border-gray-300 rounded-full">
+          <Image
+            src={userData?.data?.profileImage || "/assets/avatar.jpg"}
+            alt="Avatar"
+            width={50}
+            height={50}
+            className="rounded-full"
+          />
+        </div>
       </div>
     </div>
   );
