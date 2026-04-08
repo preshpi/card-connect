@@ -8,11 +8,13 @@ import {
   ForgotPasswordRequest,
   ResetPasswordRequest,
   ChangePasswordRequest,
+  DeleteAccountRequest,
   AuthResponse,
   UserResponse,
   MessageResponse,
   SessionsResponse,
 } from "@/app/types/auth";
+import { useAuthStore } from "@/app/store/useAuthStore";
 
 const AUTH_QUERY_KEYS = {
   user: ["auth", "user"],
@@ -86,8 +88,10 @@ export const useGetUser = () => {
       const response = await apiClient.getClient().get("/auth/me");
       return response.data;
     },
-    enabled: !!localStorage.getItem("accessToken"),
+    enabled:
+      typeof window !== "undefined" && !!localStorage.getItem("accessToken"),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -127,9 +131,31 @@ export const useChangePassword = () => {
   });
 };
 
+// Delete Account Hook
+export const useDeleteAccount = () => {
+  const queryClient = useQueryClient();
+  const clearUser = useAuthStore((state) => state.clearUser);
+
+  return useMutation<MessageResponse, Error, DeleteAccountRequest>({
+    mutationFn: async (data) => {
+      const response = await apiClient
+        .getClient()
+        .delete("/settings/account", { data });
+      return response.data;
+    },
+    onSuccess: () => {
+      apiClient.clearToken();
+      clearUser();
+      queryClient.invalidateQueries();
+      queryClient.clear();
+    },
+  });
+};
+
 // Logout Hook
 export const useLogout = () => {
   const queryClient = useQueryClient();
+  const clearUser = useAuthStore((state) => state.clearUser);
 
   return useMutation<MessageResponse, Error, void>({
     mutationFn: async () => {
@@ -145,6 +171,7 @@ export const useLogout = () => {
     },
     onSuccess: () => {
       apiClient.clearToken();
+      clearUser();
       queryClient.invalidateQueries();
       queryClient.clear();
     },
@@ -154,6 +181,7 @@ export const useLogout = () => {
 // Logout from All Devices Hook
 export const useLogoutAll = () => {
   const queryClient = useQueryClient();
+  const clearUser = useAuthStore((state) => state.clearUser);
 
   return useMutation<MessageResponse, Error, void>({
     mutationFn: async () => {
@@ -162,6 +190,7 @@ export const useLogoutAll = () => {
     },
     onSuccess: () => {
       apiClient.clearToken();
+      clearUser();
       queryClient.invalidateQueries();
       queryClient.clear();
     },
@@ -176,7 +205,8 @@ export const useGetSessions = () => {
       const response = await apiClient.getClient().get("/auth/sessions");
       return response.data;
     },
-    enabled: !!localStorage.getItem("accessToken"),
+    enabled:
+      typeof window !== "undefined" && !!localStorage.getItem("accessToken"),
   });
 };
 

@@ -33,6 +33,10 @@ export interface ChangePasswordRequest {
   new_password: string;
 }
 
+export interface DeleteAccountRequest {
+  password: string;
+}
+
 export interface ProfileUpdateRequest {
   fullName?: string;
   bio?: string;
