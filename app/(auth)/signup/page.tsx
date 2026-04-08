@@ -4,18 +4,55 @@ import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Logo from "../../../public/assets/Logo.svg";
+import { useSignUp } from "@/app/services/auth";
+import { getApiErrorMessage } from "@/app/utils/apiError";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
+  const { mutate: signup, isPending } = useSignUp();
 
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    signup(
+      {
+        fullName: `${formData.firstname} ${formData.lastname}`.trim(),
+        email: formData.email,
+        password: formData.password,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Account created successfully");
+          router.push(
+            `/verify-email?email=${encodeURIComponent(formData.email)}`,
+          );
+        },
+        onError: (err: unknown) => {
+          const message = getApiErrorMessage(
+            err,
+            "Signup failed. Please try again.",
+          );
+          toast.error(message);
+        },
+      },
+    );
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +63,7 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="flex items-start justify-start lg:items-center lg:justify-center p-5 bg-white">
+    <main className="flex h-screen items-start justify-start lg:items-center lg:justify-center p-5 bg-white">
       <div className="w-full max-w-full lg:max-w-md p-4 lg:p-8">
         {/* Logo */}
         <div className="flex items-center justify-start lg:justify-center mb-8">
@@ -53,22 +90,43 @@ export default function SignupPage() {
         </div>
 
         {/* Form Fields */}
-        <div className="space-y-5">
-          {/* Name Field */}
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          {/* First Name Field */}
           <div>
             <label
-              htmlFor="name"
+              htmlFor="firstname"
               className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
             >
-              Name
+              First Name
             </label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={formData.name}
+              id="firstname"
+              name="firstname"
+              value={formData.firstname}
               onChange={handleChange}
-              placeholder="Enter name"
+              placeholder="Enter first name"
+              autoComplete="off"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
+            />
+          </div>
+
+          {/* Last Name Field */}
+          <div>
+            <label
+              htmlFor="lastname"
+              className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
+            >
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastname"
+              name="lastname"
+              value={formData.lastname}
+              onChange={handleChange}
+              placeholder="Enter last name"
+              autoComplete="off"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
             />
           </div>
@@ -86,6 +144,7 @@ export default function SignupPage() {
               id="email"
               name="email"
               value={formData.email}
+              autoComplete="off"
               onChange={handleChange}
               placeholder="Enter email address"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
@@ -107,6 +166,7 @@ export default function SignupPage() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
+                autoComplete="off"
                 placeholder="Enter password"
                 className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
               />
@@ -124,14 +184,48 @@ export default function SignupPage() {
             </div>
           </div>
 
+          {/* Confirm Password Field */}
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-[#1B231F] mb-2 cursor-pointer"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                autoComplete="off"
+                placeholder="Confirm password"
+                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition cursor-pointer"
+              >
+                {showConfirmPassword ? (
+                  <Eye className="w-5 h-5" />
+                ) : (
+                  <EyeOff className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
           {/* Submit Button */}
           <button
-            onClick={handleSubmit}
+            type="submit"
+            disabled={isPending}
             className="w-full bg-[#7269E3] hover:bg-[#7269D1] text-white font-medium py-3 rounded-full transition duration-200 cursor-pointer shadow-sm"
           >
-            Create Account
+            {isPending ? "Creating account..." : "Create Account"}
           </button>
-        </div>
+        </form>
 
         {/* Login Link */}
         <div className="mt-6 text-left lg:text-center">

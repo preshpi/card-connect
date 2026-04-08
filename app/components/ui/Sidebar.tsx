@@ -4,6 +4,10 @@ import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useLogout } from "@/app/services/auth";
+import { getApiErrorMessage } from "@/app/utils/apiError";
 
 type MenuItem = {
   label: string;
@@ -42,7 +46,21 @@ const menuItems: MenuItem[] = [
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
   const activeItem = menuItems.find((item) => pathname === item.href);
+
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        toast.success("Logged out successfully");
+        router.push("/login");
+      },
+      onError: (error: unknown) => {
+        toast.error(getApiErrorMessage(error, "Failed to log out."));
+      },
+    });
+  };
 
   return (
     <>
@@ -142,7 +160,12 @@ const Sidebar = () => {
         </div>
 
         {/* Logout */}
-        <button className="flex items-center gap-3 text-white text-base font-medium px-4 py-3 hover:bg-white/20 rounded-xl transition-colors">
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="flex items-center gap-3 text-white text-base font-medium px-4 py-3 hover:bg-white/20 rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+        >
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path
               d="M15.75 9V7.5A2.25 2.25 0 0 0 13.5 5.25h-6A2.25 2.25 0 0 0 5.25 7.5v9A2.25 2.25 0 0 0 7.5 18.75h6A2.25 2.25 0 0 0 15.75 16.5V15"
@@ -157,7 +180,7 @@ const Sidebar = () => {
               strokeLinecap="round"
             />
           </svg>
-          Log out
+          {isLoggingOut ? "Logging out..." : "Log out"}
         </button>
       </aside>
     </>

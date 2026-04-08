@@ -3,13 +3,36 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Logo from "../../../public/assets/Logo.svg";
+import { useForgotPassword } from "@/app/services/auth";
+import { getApiErrorMessage } from "@/app/utils/apiError";
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
+  const { mutate: forgotPassword, isPending } = useForgotPassword();
 
-  const handleSubmit = () => {
-    console.log("Reset email sent to:", email);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    forgotPassword(
+      { email },
+      {
+        onSuccess: () => {
+          toast.success("OTP sent to your email");
+          router.push(`/reset-password?email=${encodeURIComponent(email)}`);
+        },
+        onError: (err: unknown) => {
+          const message = getApiErrorMessage(
+            err,
+            "Failed to send reset code. Please try again.",
+          );
+          toast.error(message);
+        },
+      },
+    );
   };
 
   return (
@@ -40,7 +63,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* Form Fields */}
-        <div className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
           {/* Email Field */}
           <div>
             <label
@@ -62,12 +85,13 @@ export default function ForgotPasswordPage() {
 
           {/* Submit Button */}
           <button
-            onClick={handleSubmit}
+            type="submit"
+            disabled={isPending}
             className="w-full bg-[#7269E3] hover:bg-[#7269D1] text-white font-medium py-3 rounded-full transition duration-200 cursor-pointer shadow-sm"
           >
-            Send Email
+            {isPending ? "Sending..." : "Send Email"}
           </button>
-        </div>
+        </form>
       </div>
     </main>
   );
