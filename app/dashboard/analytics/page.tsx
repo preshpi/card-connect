@@ -5,11 +5,11 @@ import React, { useState, useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
 import { Eye, MousePointer2, Link2, Share2, Filter } from "lucide-react";
+import { useGetAnalytics } from "@/app/services/analytics";
 
-// Mock Data
-const MOCK_DATA = {
+// Mock Data for Charts (time-series data)
+const MOCK_CHART_DATA = {
   views: {
-    total: 12450,
     data: [
       35, 35, 28, 40, 50, 22, 35, 35, 55, 35, 35, 45, 30, 15, 22, 24, 33, 35,
       40, 40, 40, 37, 37,
@@ -17,7 +17,6 @@ const MOCK_DATA = {
     color: "#6366f1",
   },
   clicks: {
-    total: 850,
     data: [
       10, 15, 12, 20, 25, 15, 20, 25, 30, 18, 22, 28, 20, 12, 18, 22, 25, 28,
       30, 25, 20, 15, 12,
@@ -25,7 +24,6 @@ const MOCK_DATA = {
     color: "#3b82f6",
   },
   shares: {
-    total: 240,
     data: [
       5, 8, 5, 12, 15, 8, 10, 12, 18, 12, 15, 10, 8, 5, 8, 10, 12, 15, 12, 10,
       8, 5, 5,
@@ -39,7 +37,12 @@ const Analytics = () => {
     "views",
   );
   const [timeFilter, setTimeFilter] = useState("Daily");
-  const currentData = MOCK_DATA[activeTab];
+
+  // Fetch analytics data
+  const { data: analyticsResponse, isLoading, error } = useGetAnalytics();
+
+  const analyticsData = analyticsResponse?.data;
+  const currentChartData = MOCK_CHART_DATA[activeTab];
 
   const option = useMemo(() => {
     return {
@@ -70,7 +73,7 @@ const Analytics = () => {
         },
         axisPointer: {
           type: "line",
-          lineStyle: { color: currentData.color, width: 1 },
+          lineStyle: { color: currentChartData.color, width: 1 },
         },
       },
       xAxis: {
@@ -94,29 +97,53 @@ const Analytics = () => {
           smooth: false,
           showSymbol: false,
           symbolSize: 8,
-          lineStyle: { width: 2, color: currentData.color },
+          lineStyle: { width: 2, color: currentChartData.color },
           areaStyle: {
             opacity: 0.2,
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: currentData.color },
+              { offset: 0, color: currentChartData.color },
               { offset: 1, color: "rgba(255, 255, 255, 0)" },
             ]),
           },
           emphasis: {
             focus: "series",
             itemStyle: {
-              color: currentData.color,
+              color: currentChartData.color,
               borderColor: "#fff",
               borderWidth: 2,
               shadowBlur: 6,
               shadowColor: "rgba(0,0,0,0.2)",
             },
           },
-          data: currentData.data,
+          data: currentChartData.data,
         },
       ],
     };
-  }, [activeTab, currentData]);
+  }, [activeTab, currentChartData]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen text-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
+          <p className="text-gray-600">Loading analytics...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen text-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 font-semibold mb-2">
+            Error loading analytics
+          </p>
+          <p className="text-gray-600">{error.message}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen text-gray-900">
@@ -131,22 +158,22 @@ const Analytics = () => {
       <div className="flex overflow-x-auto pb-4 gap-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6 md:mx-0 md:px-0 md:pb-0 scrollbar-hide snap-x">
         <StatsCard
           label="Views"
-          value="0"
+          value={analyticsData?.totalProfileViews?.toString() || "0"}
           icon={<Eye className="w-5 h-5 text-gray-600" />}
         />
         <StatsCard
           label="Clicks"
-          value="0"
+          value={analyticsData?.totalLinkClicks?.toString() || "0"}
           icon={<MousePointer2 className="w-5 h-5 text-gray-600" />}
         />
         <StatsCard
           label="Top performing"
-          value="0%"
+          value={(analyticsData?.topPerformingLink?.count || 0) + "%"}
           icon={<Link2 className="w-5 h-5 text-gray-600" />}
         />
         <StatsCard
           label="Most shared"
-          value="0%"
+          value={(analyticsData?.mostSharedLink?.count || 0) + "%"}
           icon={<Share2 className="w-5 h-5 text-gray-600" />}
         />
       </div>
