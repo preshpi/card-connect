@@ -32,6 +32,16 @@ const menuItems: MenuItem[] = [
     icon: "/assets/icons/Edit.svg",
     href: "/dashboard/customize",
   },
+  {
+    label: "Orders",
+    icon: "/assets/icons/shoppingBag.svg",
+    href: "/dashboard/orders",
+  },
+  {
+    label: "Templates",
+    icon: "/assets/icons/Template.svg",
+    href: "/dashboard/templates",
+  },
   // {
   //   label: "Profile",
   //   icon: "/assets/icons/Profile.svg",

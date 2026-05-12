@@ -1,26 +1,26 @@
+export type OrderStatus =
+  | "initiated"
+  | "paid"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
+
 export interface CardImages {
   front: string;
   back: string;
 }
 
-export interface CreateOrderRequest {
-  cardImages: CardImages;
-  fullName: string;
-  emailAddress: string;
-  phoneNumber: string;
-  streetAddress: string;
-  country: string;
-  city: string;
-  state: string;
-  zipCode: string;
+export interface OrderPayment {
+  reference: string;
+  authorizationUrl: string;
+  accessCode: string;
+  amountKobo: number;
+  currency: string;
 }
 
 export interface OrderData {
   id: string;
-  subtotal: number;
-  total: number;
-  ETA: string | null;
-  status: "initiated" | "pending" | "completed" | "cancelled";
   cardImages: CardImages;
   fullName: string;
   emailAddress: string;
@@ -30,11 +30,39 @@ export interface OrderData {
   city: string;
   state: string;
   zipCode: string;
+  shippingCost: number;
+  subtotal: number;
+  total: number;
+  estimatedTimeOfArrival: string | null;
+  status: OrderStatus;
+  cancelledAt: string | null;
   createdAt: string;
+  updatedAt: string;
+  payment?: OrderPayment;
+  // Payment fields returned from backend (Paystack)
+  paymentReference?: string;
+  paymentAuthorizationUrl?: string;
 }
 
-export interface CreateOrderResponse {
+export interface ApiResponse<T> {
   status: boolean;
-  message: string;
-  data: OrderData;
+  data: T;
+  message?: string;
+}
+
+export interface CreateOrderResponse extends ApiResponse<OrderData> {
+  meta: { idempotentReplay: boolean };
+}
+
+export interface CreateOrderPayload {
+  idempotencyKey: string;
+  cardImages: CardImages;
+  fullName: string;
+  emailAddress: string;
+  phoneNumber: string;
+  streetAddress: string;
+  country: string;
+  city: string;
+  state: string;
+  zipCode: string;
 }
