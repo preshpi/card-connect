@@ -5,7 +5,7 @@ import { ArrowLeft, Camera, Loader2, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
-import { useGetUser } from "@/app/services/auth";
+import { useAuthStore } from "@/app/store/useAuthStore";
 import { useUpdateProfile } from "@/app/services/profile";
 import type { ProfileUpdateRequest } from "@/app/types/auth";
 import { getApiErrorMessage } from "@/app/utils/apiError";
@@ -331,21 +331,21 @@ function ProfileForm({ initialProfile }: ProfileFormProps) {
 }
 
 export default function UpdateProfile() {
-  const { data: userData, isLoading: isUserLoading } = useGetUser();
+  const user = useAuthStore((state) => state.user);
+  const isUserLoading = !user;
 
   const currentProfile = useMemo(() => {
-    const user = userData?.data;
+    const u = user;
     const fullName =
-      user?.fullName ||
-      [user?.firstname, user?.lastname].filter(Boolean).join(" ");
+      u?.fullName || [u?.firstname, u?.lastname].filter(Boolean).join(" ");
 
     return {
       fullName,
-      bio: user?.bio || "",
-      email: user?.email || "",
-      profileImage: user?.profileImage || "",
+      bio: u?.bio || "",
+      email: u?.email || "",
+      profileImage: u?.profileImage || "",
     };
-  }, [userData]);
+  }, [user]);
 
   if (isUserLoading) {
     return (

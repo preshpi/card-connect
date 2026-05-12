@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useGetUser, useLogout } from "@/app/services/auth";
+import { useLogout } from "@/app/services/auth";
 import { useAuthStore } from "@/app/store/useAuthStore";
 import { getApiErrorMessage } from "@/app/utils/apiError";
 
@@ -60,17 +60,8 @@ const Sidebar = () => {
   const router = useRouter();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
   const activeItem = menuItems.find((item) => pathname === item.href);
-  const { data: userData } = useGetUser();
-  const storedUser = useAuthStore((state) => state.user);
-  const setStoredUser = useAuthStore((state) => state.setUser);
-
-  useEffect(() => {
-    if (userData?.data) {
-      setStoredUser(userData.data);
-    }
-  }, [setStoredUser, userData?.data]);
-
-  const displayUser = userData?.data ?? storedUser;
+  const user = useAuthStore((state) => state.user);
+  const displayUser = user;
   const fullName = displayUser?.fullName?.trim() || "User";
   const initials =
     fullName

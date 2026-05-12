@@ -146,8 +146,6 @@ function OrderCard({ order }: { order: OrderData }) {
     });
   };
 
-  console.log(order);
-
   const handlePayNow = async () => {
     if (!order.payment?.reference) {
       toast.error("No payment reference. Try regenerating a payment link.");

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { usePathname } from "next/navigation";
-import { useGetUser } from "@/app/services/auth";
+import { useAuthStore } from "@/app/store/useAuthStore";
 import Image from "next/image";
 
 type MenuItem = {
@@ -54,7 +54,7 @@ const menuItems: MenuItem[] = [
 ];
 
 const Topbar = () => {
-  const { data: userData } = useGetUser();
+  const user = useAuthStore((state) => state.user);
 
   const pathname = usePathname();
   // Match by route prefix so sub-routes inherit the same topbar label/icon.
@@ -69,7 +69,7 @@ const Topbar = () => {
         <p className="font-bold text-[#1D1F2C]">{label}</p>
         <div className="h-10 w-10 border border-gray-300 rounded-full">
           <Image
-            src={userData?.data?.profileImage || "/assets/avatar.jpg"}
+            src={user?.profileImage || "/assets/avatar.jpg"}
             alt="Avatar"
             width={50}
             height={50}

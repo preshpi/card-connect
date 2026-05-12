@@ -29,12 +29,12 @@ const DetailsPage = () => {
   } = useForm<CodeCardValues>({
     resolver: zodResolver(CodeCardSchema as any), // Type assertion to bypass zod type issues
     defaultValues: {
-      fullName: "",
-      role: "",
-      email: "",
-      link: "",
-      availableForJob: "",
-      theme: "vscode",
+      fullName: storedData.fullName ?? "",
+      role: storedData.role ?? "",
+      email: storedData.email ?? "",
+      link: storedData.link ?? "",
+      availableForJob: storedData.availableForJob ?? "",
+      theme: storedData.theme ?? "vscode",
     },
   });
 
