@@ -19,6 +19,15 @@ export interface OrderPayment {
   currency: string;
 }
 
+export interface DeliveryInfo {
+  provider: string;
+  status: string;
+  orderNo: string;
+  cost: number;
+  weightKg: number;
+  createdAt: string;
+}
+
 export interface OrderData {
   id: string;
   cardImages: CardImages;
@@ -39,6 +48,7 @@ export interface OrderData {
   createdAt: string;
   updatedAt: string;
   payment?: OrderPayment;
+  delivery?: DeliveryInfo;
   // Payment fields returned from backend (Paystack)
   paymentReference?: string;
   paymentAuthorizationUrl?: string;

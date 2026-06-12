@@ -2,7 +2,8 @@
 
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -13,7 +14,7 @@ import { getApiErrorMessage } from "@/app/utils/apiError";
 type MenuItem = {
   label: string;
   icon: string | StaticImport;
-  href?: string;
+  href?: string | null;
 };
 
 const menuItems: MenuItem[] = [
@@ -86,7 +87,7 @@ const Sidebar = () => {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-[#F3F4F6] z-40 grid grid-cols-3 items-center px-4">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-[#F3F4F6] z-40 grid grid-cols-3 items-center px-4">
         {/* Left */}
         <div className="flex justify-start">
           <button
@@ -120,7 +121,7 @@ const Sidebar = () => {
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
         />
       )}
 
@@ -130,7 +131,7 @@ const Sidebar = () => {
           fixed top-0 left-0 z-50 h-full w-66 bg-[#7269E3]
           py-6 px-6 flex flex-col justify-between
           transition-transform duration-300
-          ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
         {/* Profile + Menu */}
@@ -152,9 +153,9 @@ const Sidebar = () => {
                 const isActive = pathname === item.href;
 
                 return (
-                  <a
+                  <Link
                     key={item.label}
-                    href={item.href}
+                    href={item.href || "#"}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-colors ${
                       isActive
                         ? "bg-white text-[#1D1F2C] shadow"
@@ -173,7 +174,7 @@ const Sidebar = () => {
                       }}
                     />
                     {item.label}
-                  </a>
+                  </Link>
                 );
               })}
             </nav>

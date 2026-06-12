@@ -39,7 +39,13 @@ const Analytics = () => {
   const [timeFilter, setTimeFilter] = useState("Daily");
 
   // Fetch analytics data
-  const { data: analyticsResponse, isLoading, error } = useGetAnalytics();
+  const {
+    data: analyticsResponse,
+    isLoading,
+    error,
+  } = useGetAnalytics(
+    timeFilter.toLowerCase() as "daily" | "weekly" | "monthly" | "yearly",
+  );
 
   const analyticsData = analyticsResponse?.data;
   const currentChartData = MOCK_CHART_DATA[activeTab];

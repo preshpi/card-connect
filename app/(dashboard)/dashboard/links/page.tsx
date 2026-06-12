@@ -1,7 +1,7 @@
 "use client";
 
 import { DragEvent, useState } from "react";
-import { Grip, MoreVertical, Pencil, Trash } from "lucide-react";
+import { Grip, MoreVertical, Pencil, ShareIcon, Trash } from "lucide-react";
 import Image from "next/image";
 import { useAuthStore } from "@/app/store/useAuthStore";
 import {
@@ -14,10 +14,12 @@ import {
 import { getApiErrorMessage } from "@/app/utils/apiError";
 import { toast } from "sonner";
 import { LinkItem } from "@/app/types/links";
-import AddLinkModal from "@/app/dashboard/links/modals/AddLinkModal";
-import EditLinkModal from "@/app/dashboard/links/modals/EditLinkModal";
-import DeleteLinkModal from "@/app/dashboard/links/modals/DeleteLinkModal";
-import ShareLinkModal from "@/app/dashboard/links/modals/ShareLinkModal";
+import AddLinkModal from "@/app/(dashboard)/dashboard/links/modals/AddLinkModal";
+import EditLinkModal from "@/app/(dashboard)/dashboard/links/modals/EditLinkModal";
+import DeleteLinkModal from "@/app/(dashboard)/dashboard/links/modals/DeleteLinkModal";
+import ShareLinkModal from "@/app/(dashboard)/dashboard/links/modals/ShareLinkModal";
+import PreviewLinkModal from "./modals/PreviewLinkModal";
+import ShareProfileModal from "./modals/ShareProfileModal";
 
 const CLOUDINARY_UPLOAD_URL =
   "https://api.cloudinary.com/v1_1/dpokiomqq/image/upload";
@@ -53,7 +55,10 @@ const MyLink = () => {
   const [editIconFile, setEditIconFile] = useState<File | null>(null);
   const [isEditIconUploading, setIsEditIconUploading] = useState(false);
   const [editIconInputKey, setEditIconInputKey] = useState(0);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [sharingLink, setSharingLink] = useState<LinkItem | null>(null);
+  const [showShareProfileModal, setShowShareProfileModal] = useState(false);
+
   const { data: linksResponse, isLoading: isLinksLoading } = useGetLinks();
   const { mutate: createLink, isPending: isCreatingLink } = useCreateLink();
   const { mutate: updateLink, isPending: isUpdatingLink } = useUpdateLink();
@@ -459,18 +464,17 @@ const MyLink = () => {
 
   return (
     <div className="flex min-h-screen">
-      <div className="flex-1 px-6 py-10 md:px-10 grid grid-cols-1 xl:grid-cols-2 gap-12">
+      <div className="flex-1 px-6 md:px-10 grid grid-cols-1 xl:grid-cols-2 gap-12">
         {/* Left column */}
-        <div>
+        <div className="py-10">
           {/* Profile */}
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
+            <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden relative flex items-center justify-center">
               {profileImage ? (
                 <Image
                   src={profileImage}
                   alt={fullName}
-                  width={100}
-                  height={100}
+                  fill
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -532,8 +536,8 @@ const MyLink = () => {
                       : "border-gray-200"
                   } ${draggingLinkId === link.id ? "opacity-60" : ""}`}
                 >
-                  <div className="flex items-center gap-4 justify-between w-full">
-                    <div className="flex items-center gap-x-10 cursor-grab">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center lg:gap-x-10 gap-x-4 cursor-grab">
                       <Grip size={20} color="#B3B5B4" />
                       <div>
                         <div className="flex items-center gap-x-3">
@@ -558,7 +562,7 @@ const MyLink = () => {
                             <Pencil size={16} color="#000000" />
                           </button>
                         </div>
-                        <p className="text-sm text-gray-500 truncate max-w-xs pt-2">
+                        <p className="text-xs sm:text-sm text-gray-500 truncate max-w-[200px] sm:max-w-xs md:max-w-md pt-2">
                           {link.url}
                         </p>
                       </div>
@@ -596,19 +600,43 @@ const MyLink = () => {
               </button>
             </div>
           )}
+
+          {/* Floating Preview Button Bar - Mobile */}
+          <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t border-gray-200 px-6 py-4">
+            <button
+              onClick={() => setShowPreviewModal(true)}
+              className="w-full flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 text-gray-900 font-medium py-3 rounded-xl transition-colors"
+            >
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+                <path
+                  d="M12 5C7 5 2.73 8.11 1 12.46c1.73 4.35 6 7.54 11 7.54s9.27-3.19 11-7.54C21.27 8.11 17 5 12 5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                  fill="currentColor"
+                />
+              </svg>
+              Preview
+            </button>
+          </div>
+
+          {/* Add bottom padding to account for floating button */}
+          <div className="md:hidden h-20" />
         </div>
 
         {/* Right preview */}
-        <div className="hidden xl:flex border-l pl-12 flex-col items-center gap-6">
-          <div className="border max-w-fit gap-x-3 rounded-lg border-[#EBEBEB] px-4 py-3 flex items-center">
-            <p className="text-[#1B231F]">cardconnect/precious...</p>
-            <Image
-              src="/assets/icons/Link.svg"
-              alt="Copy Icon"
-              width={20}
-              height={20}
-            />
-          </div>
+        <div className="hidden xl:flex border-l py-5  border-[#EBEBEB] pl-12 flex-col items-center gap-6">
+          <button
+            onClick={() => setShowShareProfileModal(true)}
+            className="border max-w-fit gap-x-3 hover:shadow rounded-lg border-gray-200 px-2 py-2 flex items-center"
+          >
+            <p className="text-[#1B231F]">
+              cardconnect/{user?.username || "username"}
+            </p>
+            <button
+              className="text-gray-600 hover:bg-gray-200 p-2 rounded-lg transition-colors"
+              aria-label="Share"
+            >
+              <ShareIcon size={18} color="#1D1F2C" />
+            </button>
+          </button>
           <div className="w-[320px] h-164 rounded-3xl bg-white shadow px-5 border-[#ECECED] border">
             <div className="flex flex-col items-center mb-8 mt-16 gap-2">
               <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
@@ -720,6 +748,36 @@ const MyLink = () => {
         }}
         onCopy={handleCopyShareLink}
       />
+
+      {showPreviewModal && (
+        <PreviewLinkModal
+          show={showPreviewModal}
+          setShowPreviewModal={setShowPreviewModal}
+          profileImage={profileImage}
+          fullName={fullName}
+          bio={bio}
+          links={links}
+          username={user?.username}
+          openShareLinkModal={openShareLinkModal}
+          initial={initial}
+          setShowShareProfileModal={setShowShareProfileModal}
+        />
+      )}
+
+      {showShareProfileModal && (
+        <ShareProfileModal
+          open={showShareProfileModal}
+          profileUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/${user?.username || "username"}`}
+          fullName={fullName}
+          onClose={() => setShowShareProfileModal(false)}
+          onCopy={() => {
+            navigator.clipboard.writeText(
+              `${typeof window !== "undefined" ? window.location.origin : ""}/${user?.username || "username"}`,
+            );
+            toast.success("Link copied to clipboard!");
+          }}
+        />
+      )}
     </div>
   );
 };

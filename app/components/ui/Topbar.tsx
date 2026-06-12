@@ -67,13 +67,12 @@ const Topbar = () => {
     <div className="h-16 border-b border-[#EAECF0] text-[#1D1F2C]">
       <div className="flex items-center justify-between px-6 h-full">
         <p className="font-bold text-[#1D1F2C]">{label}</p>
-        <div className="h-10 w-10 border border-gray-300 rounded-full">
+        <div className="h-10 w-10 border border-gray-300 rounded-full relative">
           <Image
             src={user?.profileImage || "/assets/avatar.jpg"}
             alt="Avatar"
-            width={50}
-            height={50}
-            className="rounded-full"
+            fill
+            className="rounded-full object-cover"
           />
         </div>
       </div>

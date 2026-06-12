@@ -8,18 +8,30 @@ const ANALYTICS_QUERY_KEYS = {
 };
 
 // Get Analytics Hook
-export const useGetAnalytics = () => {
+export const useGetAnalytics = (
+  range: "daily" | "weekly" | "monthly" | "yearly" = "monthly",
+) => {
   return useQuery<AnalyticsResponse, Error>({
-    queryKey: ANALYTICS_QUERY_KEYS.all,
+    queryKey: [ANALYTICS_QUERY_KEYS.all, range],
     queryFn: async () => {
-      const response = await apiClient.getClient().get("/analytics");
+      const response = await apiClient.getClient().get("/analytics", {
+        params: { range },
+      });
       return response.data;
     },
+    enabled:
+      typeof window !== "undefined" && !!localStorage.getItem("accessToken"),
+    staleTime: 1000 * 60 * 2,
+    refetchOnWindowFocus: false,
   });
 };
 
 // Function to fetch analytics data directly
-export const fetchAnalytics = async (): Promise<AnalyticsResponse> => {
-  const response = await apiClient.getClient().get("/analytics");
+export const fetchAnalytics = async (
+  range: "daily" | "weekly" | "monthly" | "yearly" = "monthly",
+): Promise<AnalyticsResponse> => {
+  const response = await apiClient.getClient().get("/analytics", {
+    params: { range },
+  });
   return response.data;
 };

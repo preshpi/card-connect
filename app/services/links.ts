@@ -88,3 +88,17 @@ export const useReorderLinks = () => {
     },
   });
 };
+
+export const useGetPublicProfile = (username: string | null) => {
+  return useQuery({
+    queryKey: ["public-profile", username],
+    queryFn: async () => {
+      if (!username) throw new Error("Username is required");
+      const response = await apiClient.getClient().get(`/profile/${username}`);
+      return response.data;
+    },
+    enabled: !!username,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
+  });
+};

@@ -7,7 +7,6 @@ import {
   ChevronDown,
   Package,
   ShoppingBag,
-  RotateCcw,
   XCircle,
   AlertTriangle,
   CheckCircle,
@@ -15,13 +14,7 @@ import {
   Truck,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/Button";
-import {
-  useGetOrders,
-  useCancelOrder,
-  useVerifyPayment,
-  useRegeneratePaymentLink,
-} from "@/app/services/orders";
-import { usePaystack } from "@/app/hooks/usePaystack";
+import { useGetOrders, useCancelOrder } from "@/app/services/orders";
 import { OrderData, OrderStatus } from "@/app/types/orders";
 import { useRouter } from "next/navigation";
 
@@ -84,7 +77,7 @@ function CancelDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
             <AlertTriangle className="w-5 h-5 text-red-600" />
           </div>
           <h3 className="text-lg font-bold text-gray-900">Cancel Order?</h3>
@@ -93,7 +86,7 @@ function CancelDialog({
           This action cannot be undone. Your order will be permanently
           cancelled.
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={onClose}
             disabled={isPending}
@@ -120,12 +113,8 @@ function OrderCard({ order }: { order: OrderData }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [isRegenerating, setIsRegenerating] = useState(false);
   const router = useRouter();
   const { mutate: cancelOrder, isPending: isCancelling } = useCancelOrder();
-  const { mutateAsync: verifyPayment } = useVerifyPayment();
-  const { mutateAsync: regenerateLink } = useRegeneratePaymentLink();
-  const { initializePayment } = usePaystack();
 
   const statusCfg = STATUS_CONFIG[order.status] ?? STATUS_CONFIG.initiated;
   const StatusIcon = statusCfg.Icon;
@@ -168,10 +157,10 @@ function OrderCard({ order }: { order: OrderData }) {
         {/* ── Summary Row (always visible) ── */}
         <button
           onClick={() => setIsExpanded((e) => !e)}
-          className="w-full flex items-center gap-4 p-4 text-left"
+          className="w-full flex items-center gap-3 p-3 sm:p-4 text-left"
         >
           {/* Card thumbnail */}
-          <div className="w-16 h-11 rounded-lg overflow-hidden bg-gradient-to-br from-indigo-600 to-indigo-800 flex-shrink-0">
+          <div className="w-14 h-10 sm:w-16 sm:h-11 rounded-lg overflow-hidden bg-linear-to-br from-indigo-600 to-indigo-800 shrink-0">
             {order.cardImages?.front ? (
               <Image
                 src={order.cardImages.front}
@@ -189,15 +178,18 @@ function OrderCard({ order }: { order: OrderData }) {
 
           {/* Meta */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap mb-0.5">
-              <span className="text-sm font-semibold text-gray-900">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <span className="text-xs sm:text-sm font-semibold text-gray-900">
                 #{order.id.slice(0, 8).toUpperCase()}
               </span>
               <span
-                className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border ${statusCfg.color} ${statusCfg.bg}`}
+                className={`inline-flex items-center gap-0.5 text-xs font-medium px-2 py-0.5 rounded-full border whitespace-nowrap ${statusCfg.color} ${statusCfg.bg}`}
               >
-                <StatusIcon className="w-3 h-3" />
-                {statusCfg.label}
+                <StatusIcon className="w-3 h-3 shrink-0" />
+                <span className="hidden sm:inline">{statusCfg.label}</span>
+                <span className="sm:hidden">
+                  {statusCfg.label.split(" ")[0]}
+                </span>
               </span>
             </div>
             <p className="text-xs text-gray-400">
@@ -209,23 +201,26 @@ function OrderCard({ order }: { order: OrderData }) {
             </p>
           </div>
 
-          {/* Total + chevron */}
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <span className="text-sm font-bold text-gray-900">
-              ₦{order.total.toLocaleString()}
-            </span>
-            <ChevronDown
-              className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-                isExpanded ? "rotate-180" : ""
-              }`}
-            />
-          </div>
+          {/* Chevron only */}
+          <ChevronDown
+            className={`w-5 h-5 text-gray-400 transition-transform duration-200 shrink-0 ${
+              isExpanded ? "rotate-180" : ""
+            }`}
+          />
         </button>
+
+        {/* Bottom row: Total amount — always visible */}
+        <div className="flex items-center justify-between px-3 sm:px-4 py-3 sm:py-4 border-t border-gray-100">
+          <span className="text-xs text-gray-500 font-medium">Total</span>
+          <span className="text-base sm:text-lg font-bold text-gray-900">
+            ₦{order.total.toLocaleString()}
+          </span>
+        </div>
 
         {/* ── Expanded Details ── */}
         {isExpanded && (
-          <div className="border-t border-gray-100 px-4 pb-5 pt-4 space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="border-t border-gray-100 px-3 sm:px-4 pb-4 sm:pb-5 pt-4 space-y-4 sm:space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
               {/* Card preview */}
               <div>
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
@@ -236,7 +231,7 @@ function OrderCard({ order }: { order: OrderData }) {
                     e.stopPropagation();
                     setIsCardFlipped((f) => !f);
                   }}
-                  className="relative w-full aspect-video rounded-xl overflow-hidden cursor-pointer bg-gradient-to-br from-indigo-600 to-indigo-800"
+                  className="relative w-full aspect-video rounded-xl overflow-hidden cursor-pointer bg-linear-to-br from-indigo-600 to-indigo-800"
                 >
                   {order.cardImages?.front && order.cardImages?.back ? (
                     <Image
@@ -260,12 +255,12 @@ function OrderCard({ order }: { order: OrderData }) {
                 </div>
               </div>
 
-              {/* Delivery info */}
+              {/* Delivery info — better mobile spacing */}
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
                   Delivery
                 </p>
-                <dl className="space-y-1.5 text-sm">
+                <dl className="space-y-2 text-xs sm:text-sm">
                   {[
                     ["Name", order.fullName],
                     ["Email", order.emailAddress],
@@ -276,11 +271,14 @@ function OrderCard({ order }: { order: OrderData }) {
                     ["Country", order.country],
                     ["Zip", order.zipCode],
                   ].map(([label, value]) => (
-                    <div key={label} className="flex gap-2">
-                      <dt className="text-gray-400 w-16 flex-shrink-0 text-xs pt-0.5">
+                    <div
+                      key={label}
+                      className="flex flex-col sm:flex-row sm:gap-2 sm:justify-between"
+                    >
+                      <dt className="text-gray-400 font-medium text-xs">
                         {label}
                       </dt>
-                      <dd className="text-gray-800 font-medium text-xs break-all">
+                      <dd className="text-gray-800 font-semibold text-xs sm:text-right break-all">
                         {value}
                       </dd>
                     </div>
@@ -289,21 +287,66 @@ function OrderCard({ order }: { order: OrderData }) {
               </div>
             </div>
 
-            {/* Pricing */}
-            <div className="bg-gray-50 rounded-xl p-4">
+            {/* Shipping Details — stack on mobile */}
+            {order.delivery && (
+              <div className="bg-blue-50 rounded-xl p-3 sm:p-4 border border-blue-100">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                  Shipping Details
+                </p>
+                <dl className="space-y-3 text-xs sm:text-sm">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:gap-2">
+                    <dt className="text-gray-600 font-medium">Provider</dt>
+                    <dd className="text-gray-900 font-semibold capitalize">
+                      {order.delivery.provider}
+                    </dd>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:gap-2">
+                    <dt className="text-gray-600 font-medium">Tracking #</dt>
+                    <dd className="text-gray-900 font-mono text-xs break-all">
+                      {order.delivery.orderNo}
+                    </dd>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:gap-2">
+                    <dt className="text-gray-600 font-medium">Status</dt>
+                    <dd className="text-blue-700 font-semibold">
+                      {order.delivery.status}
+                    </dd>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:gap-2 border-t border-blue-200 pt-3 sm:pt-2">
+                    <dt className="text-gray-600 font-medium">Weight</dt>
+                    <dd className="text-gray-900 font-medium">
+                      {order.delivery.weightKg} kg
+                    </dd>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:gap-2">
+                    <dt className="text-gray-600 font-medium">Delivery Cost</dt>
+                    <dd className="text-gray-900 font-medium">
+                      ₦{order.delivery.cost.toLocaleString()}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            )}
+
+            {/* Pricing — stack on mobile */}
+            <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
                 Pricing
               </p>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2.5 text-xs sm:text-sm">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>₦{order.subtotal.toLocaleString()}</span>
+                  <span className="font-medium">
+                    ₦{order.subtotal.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span>₦{order.shippingCost?.toLocaleString()}</span>
+                  <span className="font-medium">
+                    ₦{order.shippingCost?.toLocaleString()}
+                  </span>
                 </div>
-                <div className="flex justify-between font-bold text-gray-900 border-t border-gray-200 pt-2 mt-2">
+                <div className="flex justify-between font-bold text-gray-900 border-t border-gray-200 pt-2.5 mt-2">
                   <span>Total</span>
                   <span>₦{order.total.toLocaleString()}</span>
                 </div>
@@ -316,36 +359,25 @@ function OrderCard({ order }: { order: OrderData }) {
                     {
                       weekday: "short",
                       day: "numeric",
-                      month: "long",
-                      year: "numeric",
+                      month: "short",
                     },
                   )}
                 </p>
               )}
             </div>
 
-            {/* Actions — only when status is initiated */}
+            {/* Actions — responsive buttons */}
             {showActions && (
-              <div className="flex flex-wrap gap-2 pt-1">
+              <div className="flex flex-col sm:flex-row gap-2 pt-2">
                 <Button
                   onClick={handlePayNow}
-                  className="bg-[#7269E3] hover:bg-[#5a52c8] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+                  className="flex-1 bg-[#7269E3] hover:bg-[#5a52c8] text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
                 >
-                  Pay Now — ₦{order.total.toLocaleString()}
-                </Button>
-                <Button
-                  // onClick={handleRegenerate}
-                  disabled={isRegenerating}
-                  className="flex items-center gap-1.5 border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 text-sm font-medium px-4 py-2.5 rounded-xl transition-colors disabled:opacity-50"
-                >
-                  <RotateCcw
-                    className={`w-3.5 h-3.5 ${isRegenerating ? "animate-spin" : ""}`}
-                  />
-                  {isRegenerating ? "Generating…" : "Regenerate Link"}
+                  Pay Now — ₦{(order.total / 1000).toFixed(1)}k
                 </Button>
                 <Button
                   onClick={() => setShowCancelDialog(true)}
-                  className="text-red-600 hover:bg-red-50 text-sm font-medium px-4 py-2.5 rounded-xl transition-colors"
+                  className="flex-1 text-red-600 hover:bg-red-50 text-xs sm:text-sm font-medium px-4 py-2.5 rounded-xl transition-colors border border-red-200"
                 >
                   Cancel Order
                 </Button>
@@ -362,13 +394,13 @@ function OrderCard({ order }: { order: OrderData }) {
 
 function OrderSkeleton() {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
-      <div className="w-16 h-11 rounded-lg bg-gray-200 animate-pulse flex-shrink-0" />
+    <div className="bg-white rounded-2xl border border-gray-100 p-3 sm:p-4 flex items-center gap-3">
+      <div className="w-14 h-10 sm:w-16 sm:h-11 rounded-lg bg-gray-200 animate-pulse shrink-0" />
       <div className="flex-1 space-y-2">
         <div className="h-3.5 bg-gray-200 rounded animate-pulse w-2/5" />
         <div className="h-3 bg-gray-200 rounded animate-pulse w-1/4" />
       </div>
-      <div className="h-4 bg-gray-200 rounded animate-pulse w-16" />
+      <div className="h-4 bg-gray-200 rounded animate-pulse w-12" />
     </div>
   );
 }
@@ -383,13 +415,15 @@ export default function OrdersPage() {
   );
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 py-8 md:py-12">
-      <div className="w-full">
+    <div className="w-full min-h-screen bg-gray-50 py-6 sm:py-8 md:py-12 px-4 sm:px-0">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            My Orders
+          </h1>
           {!isLoading && orders.length > 0 && (
-            <span className="text-sm text-gray-400">
+            <span className="text-xs sm:text-sm text-gray-400">
               {orders.length} order{orders.length !== 1 ? "s" : ""}
             </span>
           )}
@@ -419,7 +453,7 @@ export default function OrdersPage() {
 
         {/* Empty */}
         {!isLoading && !isError && orders.length === 0 && (
-          <div className="flex flex-col items-center py-24 text-center">
+          <div className="flex flex-col items-center py-20 sm:py-24 text-center">
             <div className="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center mb-4">
               <ShoppingBag className="w-8 h-8 text-indigo-300" />
             </div>

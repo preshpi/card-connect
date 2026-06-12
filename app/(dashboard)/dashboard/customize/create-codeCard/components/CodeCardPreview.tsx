@@ -56,8 +56,8 @@ const CodeCardPreview = ({
           <div
             className="w-full h-full rounded-2xl shadow-2xl p-6 font-mono text-sm animate-in fade-in zoom-in-95 duration-300 border border-black/5"
             style={{
-              backgroundColor: activeTheme.bg,
-              color: activeTheme.text,
+              backgroundColor: activeTheme?.bg,
+              color: activeTheme?.text,
             }}
           >
             <div className="flex gap-1.5 mb-6">
@@ -68,7 +68,7 @@ const CodeCardPreview = ({
 
             <div
               className="mb-3 text-xs opacity-50"
-              style={{ color: activeTheme.tokens.comment }}
+              style={{ color: activeTheme?.tokens.comment }}
             >
               // Developer Business Card
             </div>
@@ -77,41 +77,41 @@ const CodeCardPreview = ({
               <span className="select-none mr-4 opacity-30">1</span> {`{`}{" "}
               <br />
               <span className="select-none mr-4 opacity-30">2</span>
-              <span className="pl-2" style={{ color: activeTheme.tokens.key }}>
+              <span className="pl-2" style={{ color: activeTheme?.tokens.key }}>
                 "name"
               </span>
               :
-              <span style={{ color: activeTheme.tokens.string }}>
+              <span style={{ color: activeTheme?.tokens.string }}>
                 {" "}
                 "{storedData.fullName || "@username"}"
               </span>
               ,<br />
               <span className="select-none mr-4 opacity-30">3</span>
-              <span className="pl-2" style={{ color: activeTheme.tokens.key }}>
+              <span className="pl-2" style={{ color: activeTheme?.tokens.key }}>
                 "email"
               </span>
               :
-              <span style={{ color: activeTheme.tokens.string }}>
+              <span style={{ color: activeTheme?.tokens.string }}>
                 {" "}
                 "{storedData.email || "mail@example.com"}"
               </span>
               ,<br />
               <span className="select-none mr-4 opacity-30">4</span>
-              <span className="pl-2" style={{ color: activeTheme.tokens.key }}>
+              <span className="pl-2" style={{ color: activeTheme?.tokens.key }}>
                 "role"
               </span>
               :
-              <span style={{ color: activeTheme.tokens.string }}>
+              <span style={{ color: activeTheme?.tokens.string }}>
                 {" "}
                 "{storedData.role || "developer"}"
               </span>
               ,<br />
               <span className="select-none mr-4 opacity-30">5</span>
-              <span className="pl-2" style={{ color: activeTheme.tokens.key }}>
+              <span className="pl-2" style={{ color: activeTheme?.tokens.key }}>
                 "available"
               </span>
               :
-              <span style={{ color: activeTheme.tokens.boolean }}>
+              <span style={{ color: activeTheme?.tokens.boolean }}>
                 {" "}
                 {storedData.availableForJob || "true"}
               </span>
@@ -123,13 +123,13 @@ const CodeCardPreview = ({
           /* BACK VIEW: Dynamic Background */
           <div
             className="w-full h-full rounded-2xl shadow-2xl flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-300 relative overflow-hidden border border-black/5"
-            style={{ backgroundColor: activeTheme.bg }}
+            style={{ backgroundColor: activeTheme?.bg }}
           >
             {/* Pattern effect */}
             <div
               className="absolute inset-0 opacity-10"
               style={{
-                backgroundImage: `radial-gradient(circle, ${activeTheme.tokens.key} 1px, transparent 1px)`,
+                backgroundImage: `radial-gradient(circle, ${activeTheme?.tokens.key} 1px, transparent 1px)`,
                 backgroundSize: "20px 20px",
               }}
             ></div>
@@ -146,7 +146,7 @@ const CodeCardPreview = ({
             </div>
             <p
               className="z-10 text-xs mt-4 font-mono opacity-70"
-              style={{ color: activeTheme.text }}
+              style={{ color: activeTheme?.text }}
             >
               Scan to connect
             </p>

@@ -265,8 +265,6 @@ const Checkout = () => {
       toast.error(
         error instanceof Error ? error.message : "Something went wrong",
       );
-    } finally {
-      setIsOpeningPayment(false);
     }
   };
 

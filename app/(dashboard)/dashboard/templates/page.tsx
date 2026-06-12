@@ -149,7 +149,7 @@ const Template = () => {
   const router = useRouter();
   const { setTemplate, setDetails, setPlainDetails } = useBuilderStore();
   const [templateStore] = useState<TemplateStore>(() => {
-    const raw = localStorage.getItem(TEMPLATE_STORAGE_KEY);
+    const raw = localStorage?.getItem(TEMPLATE_STORAGE_KEY);
 
     if (!raw) {
       return { order: [], byId: {} };

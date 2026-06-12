@@ -123,7 +123,7 @@ export default function PlainCardForm({ methods, onProceed }: any) {
                 error={errors.imageSize?.message}
               />
               <SelectField
-                label="Logo Position"
+                label="Logo Position (with respect to text)"
                 registration={register("logoPosition")}
                 options={["center", "top", "bottom", "left", "right"]}
               />
@@ -176,7 +176,36 @@ export default function PlainCardForm({ methods, onProceed }: any) {
           <SelectField
             label="Font"
             registration={register("fontFamily")}
-            options={["Arial", "Inter", "Roboto Mono", "Times New Roman"]}
+            options={[
+              "Arial",
+              "Inter",
+              "Roboto Mono",
+              "Times New Roman",
+              "Georgia",
+              "Verdana",
+              "Courier New",
+              "Comic Sans MS",
+              "Impact",
+              "Palatino",
+              "Tahoma",
+              "Trebuchet MS",
+              "Garamond",
+              "Lucida Console",
+              "Calibri",
+              "Consolas",
+              "Segoe UI",
+              "Book Antiqua",
+              "Century Gothic",
+              "Courier",
+              "Cambria",
+              "Candara",
+              "Constantia",
+              "Corbel",
+              "Helvetica",
+              "Times",
+              "Geneva",
+              "Univers",
+            ]}
           />
         </div>
 
@@ -212,6 +241,8 @@ export const InputField = ({
       {...registration}
       type={type || "text"}
       placeholder={placeholder}
+      min={0}
+      step={1}
       className="p-3 border rounded-xl border-[#DDDDDD] background-none outline-none focus:ring-2 text-sm  focus:ring-indigo-100"
     />
     {error && <span className="text-red-500 text-xs">{error}</span>}

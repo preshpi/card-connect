@@ -1,7 +1,7 @@
 import React from "react";
-import Sidebar from "../components/ui/Sidebar";
-import Topbar from "../components/ui/Topbar";
-import AuthInitializer from "../components/AuthInitializer";
+import Sidebar from "../../components/ui/Sidebar";
+import Topbar from "../../components/ui/Topbar";
+import AuthInitializer from "../../components/AuthInitializer";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (

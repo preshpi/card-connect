@@ -1,4 +1,4 @@
-import StepOneTemplate from "@/app/dashboard/customize/components/StepOneTemplate";
+import StepOneTemplate from "@/app/(dashboard)/dashboard/customize/components/StepOneTemplate";
 import React from "react";
 
 const Customize = () => {
