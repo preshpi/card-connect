@@ -27,9 +27,14 @@ const menuItems: MenuItem[] = [
     hrefPrefix: "/dashboard/customize/capture",
   },
   {
-    label: "Customize",
+    label: "Customize Card",
     icon: "/assets/icons/Edit.svg",
     hrefPrefix: "/dashboard/customize",
+  },
+  {
+    label: "Design",
+    icon: "/assets/icons/Edit.svg",
+    hrefPrefix: "/dashboard/design",
   },
   {
     label: "Templates",

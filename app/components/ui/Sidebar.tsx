@@ -10,11 +10,13 @@ import { toast } from "sonner";
 import { useLogout } from "@/app/services/auth";
 import { useAuthStore } from "@/app/store/useAuthStore";
 import { getApiErrorMessage } from "@/app/utils/apiError";
+import { ChevronDown } from "lucide-react";
 
 type MenuItem = {
   label: string;
   icon: string | StaticImport;
   href?: string | null;
+  subItems?: MenuItem[];
 };
 
 const menuItems: MenuItem[] = [
@@ -22,6 +24,18 @@ const menuItems: MenuItem[] = [
     label: "My Link",
     icon: "/assets/icons/Category.svg",
     href: "/dashboard/links",
+    subItems: [
+      {
+        label: "Manage Links",
+        icon: "/assets/icons/Category.svg",
+        href: "/dashboard/links",
+      },
+      {
+        label: "Customize Design",
+        icon: "/assets/icons/Edit.svg",
+        href: "/dashboard/design",
+      },
+    ],
   },
   {
     label: "Analytics",
@@ -29,7 +43,7 @@ const menuItems: MenuItem[] = [
     href: "/dashboard/analytics",
   },
   {
-    label: "Customize",
+    label: "Customize Card",
     icon: "/assets/icons/Edit.svg",
     href: "/dashboard/customize",
   },
@@ -43,11 +57,11 @@ const menuItems: MenuItem[] = [
     icon: "/assets/icons/Template.svg",
     href: "/dashboard/templates",
   },
-  // {
-  //   label: "Profile",
-  //   icon: "/assets/icons/Profile.svg",
-  //   href: "/dashboard/profile",
-  // },
+  {
+    label: "Profile",
+    icon: "/assets/icons/Profile.svg",
+    href: "/dashboard/profile",
+  },
   {
     label: "Settings",
     icon: "/assets/icons/Setting.svg",
@@ -57,6 +71,7 @@ const menuItems: MenuItem[] = [
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const pathname = usePathname();
   const router = useRouter();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
@@ -82,6 +97,19 @@ const Sidebar = () => {
         toast.error(getApiErrorMessage(error, "Failed to log out."));
       },
     });
+  };
+
+  const toggleExpanded = (label: string) => {
+    setExpandedItems((prev) =>
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
+    );
+  };
+
+  const isSubItemActive = (item: MenuItem) => {
+    if (item.subItems) {
+      return item.subItems.some((subItem) => pathname === subItem.href);
+    }
+    return false;
   };
 
   return (
@@ -151,30 +179,72 @@ const Sidebar = () => {
             <nav className="flex flex-col gap-2">
               {menuItems.map((item) => {
                 const isActive = pathname === item.href;
+                const hasSubItems = item.subItems && item.subItems.length > 0;
+                const isExpanded = expandedItems.includes(item.label);
+                const isSubActive = isSubItemActive(item);
 
                 return (
-                  <Link
-                    key={item.label}
-                    href={item.href || "#"}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-                      isActive
-                        ? "bg-white text-[#1D1F2C] shadow"
-                        : "text-white hover:bg-white/20"
-                    }`}
-                  >
-                    <Image
-                      src={item.icon}
-                      alt={item.label}
-                      width={20}
-                      height={20}
-                      style={{
-                        filter: isActive
-                          ? "none"
-                          : "brightness(0) saturate(100%) invert(1)",
+                  <div key={item.label}>
+                    {/* Main menu item */}
+                    <button
+                      onClick={() => {
+                        if (hasSubItems) {
+                          toggleExpanded(item.label);
+                        } else if (item.href) {
+                          router.push(item.href);
+                          setIsOpen(false);
+                        }
                       }}
-                    />
-                    {item.label}
-                  </Link>
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-colors ${
+                        isActive || isSubActive
+                          ? "bg-white text-[#1D1F2C] shadow"
+                          : "text-white hover:bg-white/20"
+                      }`}
+                    >
+                      <Image
+                        src={item.icon}
+                        alt={item.label}
+                        width={20}
+                        height={20}
+                        style={{
+                          filter:
+                            isActive || isSubActive
+                              ? "none"
+                              : "brightness(0) saturate(100%) invert(1)",
+                        }}
+                      />
+                      <span className="flex-1 text-left">{item.label}</span>
+                      {hasSubItems && (
+                        <ChevronDown
+                          size={16}
+                          className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                        />
+                      )}
+                    </button>
+
+                    {/* Submenu items */}
+                    {hasSubItems && isExpanded && (
+                      <div className="mt-2 ml-4 space-y-1 border-l border-white/20 pl-4">
+                        {item.subItems!.map((subItem) => {
+                          const isSubItemActive = pathname === subItem.href;
+                          return (
+                            <Link
+                              key={subItem.label}
+                              href={subItem.href || "#"}
+                              onClick={() => setIsOpen(false)}
+                              className={`block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                isSubItemActive
+                                  ? "bg-white/30 text-white"
+                                  : "text-white/70 hover:text-white hover:bg-white/20"
+                              }`}
+                            >
+                              {subItem.label}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </nav>
