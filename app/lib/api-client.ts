@@ -60,18 +60,26 @@ class ApiClient {
               throw new Error("No refresh token available");
             }
 
-            const response = await this.client.post("/auth/refresh-auth", {
-              refreshToken,
-            });
+            // ✅ Create a fresh axios instance without interceptors for refresh
+            const refreshResponse = await axios.post(
+              `${API_BASE_URL}/auth/refresh-auth`,
+              { refreshToken },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              },
+            );
 
-            const { accessToken } = response.data.data;
+            if (!refreshResponse.data.status) {
+              throw new Error(refreshResponse.data.message);
+            }
+
+            const { accessToken } = refreshResponse.data.data;
             this.token = accessToken;
             localStorage.setItem("accessToken", accessToken);
 
-            originalRequest.headers = {
-              ...originalRequest.headers,
-              Authorization: `Bearer ${accessToken}`,
-            };
+            originalRequest.headers.set("Authorization", `Bearer ${accessToken}`);
             return this.client(originalRequest);
           } catch (refreshError) {
             localStorage.removeItem("accessToken");

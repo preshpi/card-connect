@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { usePathname } from "next/navigation";
-import { useGetUser } from "@/app/services/auth";
+import { useAuthStore } from "@/app/store/useAuthStore";
 import Image from "next/image";
 
 type MenuItem = {
@@ -27,14 +27,29 @@ const menuItems: MenuItem[] = [
     hrefPrefix: "/dashboard/customize/capture",
   },
   {
-    label: "Customize",
+    label: "Customize Card",
     icon: "/assets/icons/Edit.svg",
     hrefPrefix: "/dashboard/customize",
+  },
+  {
+    label: "Design",
+    icon: "/assets/icons/Edit.svg",
+    hrefPrefix: "/dashboard/design",
+  },
+  {
+    label: "Templates",
+    icon: "/assets/icons/Template.svg",
+    hrefPrefix: "/dashboard/templates",
   },
   {
     label: "Profile",
     icon: "/assets/icons/Profile.svg",
     hrefPrefix: "/dashboard/profile",
+  },
+  {
+    label: "Orders",
+    icon: "/assets/icons/shoppingBag.svg",
+    hrefPrefix: "/dashboard/orders",
   },
   {
     label: "Settings",
@@ -44,7 +59,7 @@ const menuItems: MenuItem[] = [
 ];
 
 const Topbar = () => {
-  const { data: userData } = useGetUser();
+  const user = useAuthStore((state) => state.user);
 
   const pathname = usePathname();
   // Match by route prefix so sub-routes inherit the same topbar label/icon.
@@ -57,13 +72,12 @@ const Topbar = () => {
     <div className="h-16 border-b border-[#EAECF0] text-[#1D1F2C]">
       <div className="flex items-center justify-between px-6 h-full">
         <p className="font-bold text-[#1D1F2C]">{label}</p>
-        <div className="h-10 w-10 border border-gray-300 rounded-full">
+        <div className="h-10 w-10 border border-gray-300 rounded-full relative">
           <Image
-            src={userData?.data?.profileImage || "/assets/avatar.jpg"}
+            src={user?.profileImage || "/assets/avatar.jpg"}
             alt="Avatar"
-            width={50}
-            height={50}
-            className="rounded-full"
+            fill
+            className="rounded-full object-cover"
           />
         </div>
       </div>
