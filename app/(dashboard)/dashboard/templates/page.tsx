@@ -149,6 +149,10 @@ const Template = () => {
   const router = useRouter();
   const { setTemplate, setDetails, setPlainDetails } = useBuilderStore();
   const [templateStore] = useState<TemplateStore>(() => {
+    if (typeof window === 'undefined') {
+      return { order: [], byId: {} };
+    }
+
     const raw = localStorage?.getItem(TEMPLATE_STORAGE_KEY);
 
     if (!raw) {

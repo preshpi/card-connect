@@ -4,6 +4,13 @@ import { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
 import { X, RotateCw, ZoomIn, ZoomOut } from "lucide-react";
 
+type CroppedAreaPixels = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 type ImageCropModalProps = {
   open: boolean;
   imageSrc: string;
@@ -20,10 +27,10 @@ export default function ImageCropModal({
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
 
   const onCropAreaChange = useCallback(
-    (croppedArea: any, croppedAreaPixels: any) => {
+    (_croppedArea: CroppedAreaPixels, croppedAreaPixels: CroppedAreaPixels) => {
       setCroppedAreaPixels(croppedAreaPixels);
     },
     [],

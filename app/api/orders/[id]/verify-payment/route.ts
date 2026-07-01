@@ -4,13 +4,14 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse> {
   try {
+    const { id } = await params;
     const authorization = request.headers.get("authorization");
 
     const response = await fetch(
-      `${API_BASE_URL}/api/orders/${params.id}/verify-payment`,
+      `${API_BASE_URL}/api/orders/${id}/verify-payment`,
       {
         method: "POST",
         headers: {

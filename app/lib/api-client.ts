@@ -79,10 +79,7 @@ class ApiClient {
             this.token = accessToken;
             localStorage.setItem("accessToken", accessToken);
 
-            originalRequest.headers = {
-              ...originalRequest.headers,
-              Authorization: `Bearer ${accessToken}`,
-            };
+            originalRequest.headers.set("Authorization", `Bearer ${accessToken}`);
             return this.client(originalRequest);
           } catch (refreshError) {
             localStorage.removeItem("accessToken");

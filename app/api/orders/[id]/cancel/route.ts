@@ -4,13 +4,14 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse> {
   try {
+    const { id } = await params;
     const authorization = request.headers.get("authorization");
 
     const response = await fetch(
-      `${API_BASE_URL}/api/orders/${params.id}/cancel`,
+      `${API_BASE_URL}/api/orders/${id}/cancel`,
       {
         method: "DELETE",
         headers: {
