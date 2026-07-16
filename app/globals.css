@@ -65,6 +65,10 @@
 
   /* font */
   --font-sans: var(--font-sora);
+  --font-manrope: var(--font-manrope);
+  --font-poppins: var(--font-poppins);
+  --font-inter: var(--font-inter);
+  --font-playfair: var(--font-playfair);
 }
 
 html {

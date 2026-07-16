@@ -5,6 +5,7 @@ import ConditionalLayout from "./components/ConditionalLayout";
 import { QueryProvider } from "./providers/QueryProvider";
 import { Toaster } from "sonner";
 import AuthInitializer from "./components/AuthInitializer";
+import { FONT_VARIABLES } from "./lib/fonts";
 
 const sora = localFont({
   src: [
@@ -31,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${sora.variable} antialiased scroll-smooth`}>
+      <body className={`${sora.variable} ${FONT_VARIABLES} antialiased scroll-smooth`}>
         <QueryProvider>
           <AuthInitializer />
           <ConditionalLayout>{children}</ConditionalLayout>

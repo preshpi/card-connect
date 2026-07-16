@@ -9,6 +9,7 @@ import {
   ReorderLinksResponse,
   UpdateLinkRequest,
   UpdateLinkResponse,
+  PublicProfileResponse,
 } from "@/app/types/links";
 
 const LINKS_QUERY_KEY = ["links"];
@@ -90,7 +91,7 @@ export const useReorderLinks = () => {
 };
 
 export const useGetPublicProfile = (username: string | null) => {
-  return useQuery({
+  return useQuery<PublicProfileResponse, Error>({
     queryKey: ["public-profile", username],
     queryFn: async () => {
       if (!username) throw new Error("Username is required");

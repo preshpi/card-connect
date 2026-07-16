@@ -1,7 +1,7 @@
 "use client";
 
 import { DragEvent, useState } from "react";
-import { Grip, MoreVertical, Pencil, ShareIcon, Trash } from "lucide-react";
+import { Grip, Pencil, ShareIcon, Trash } from "lucide-react";
 import Image from "next/image";
 import { useAuthStore } from "@/app/store/useAuthStore";
 import {
@@ -20,6 +20,10 @@ import DeleteLinkModal from "@/app/(dashboard)/dashboard/links/modals/DeleteLink
 import ShareLinkModal from "@/app/(dashboard)/dashboard/links/modals/ShareLinkModal";
 import PreviewLinkModal from "./modals/PreviewLinkModal";
 import ShareProfileModal from "./modals/ShareProfileModal";
+import ProfileRenderer from "@/app/components/profile/ProfileRenderer";
+import PhoneFrame from "@/app/components/profile/PhoneFrame";
+import { DEFAULT_PROFILE_DESIGN } from "@/app/types/design";
+import { useDesignStore } from "@/app/store/useDesignStore";
 
 const CLOUDINARY_UPLOAD_URL =
   "https://api.cloudinary.com/v1_1/dpokiomqq/image/upload";
@@ -543,7 +547,7 @@ const MyLink = () => {
                         <div className="flex items-center gap-x-3">
                           {link.icon ? (
                             <Image
-                              src={link.icon}
+                              src={link.icon || ""}
                               alt={link.title}
                               width={25}
                               height={25}
@@ -637,59 +641,20 @@ const MyLink = () => {
               <ShareIcon size={18} color="#1D1F2C" />
             </button>
           </button>
-          <div className="w-[320px] h-164 rounded-3xl bg-white shadow px-5 border-[#ECECED] border">
-            <div className="flex flex-col items-center mb-8 mt-16 gap-2">
-              <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
-                {profileImage ? (
-                  <Image
-                    src={profileImage}
-                    alt={fullName}
-                    width={100}
-                    height={100}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <span className="text-lg font-semibold text-gray-600">
-                    {initial}
-                  </span>
-                )}
-              </div>{" "}
-              <div className="text-center">
-                <p className="font-semibold text-gray-900">{fullName}</p>
-                <p className="text-sm text-gray-600">{bio}</p>
-              </div>{" "}
-            </div>
-
-            <div className="space-y-3">
-              {links.map((link: LinkItem) => (
-                <div
-                  key={`preview-${link.id || `${link.title}-${link.url}`}`}
-                  className="w-full rounded-xl bg-gray-100 px-3 py-4 text-gray-900"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    {link.icon ? (
-                      <Image
-                        src={link.icon}
-                        alt={link.title}
-                        width={20}
-                        height={20}
-                        className="rounded object-cover"
-                      />
-                    ) : null}
-                    <span className="truncate">{link.title}</span>
-                    <button
-                      type="button"
-                      onClick={() => openShareLinkModal(link)}
-                      aria-label={`Share ${link.title}`}
-                      className="rounded p-1 hover:bg-gray-200"
-                    >
-                      <MoreVertical size={18} color="#1D1F2C" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Phone-framed preview using ProfileRenderer */}
+          <PhoneFrame>
+            <ProfileRenderer
+              user={{
+                fullName,
+                bio,
+                profileImage,
+                username: user?.username,
+              }}
+              links={links}
+              socialLinks={useDesignStore((state) => state.socialLinksDraft)}
+              design={user?.design || DEFAULT_PROFILE_DESIGN}
+            />
+          </PhoneFrame>
         </div>
       </div>
 

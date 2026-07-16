@@ -14,6 +14,8 @@ type CroppedAreaPixels = {
 type ImageCropModalProps = {
   open: boolean;
   imageSrc: string;
+  aspect?: number;
+  cropShape?: "round" | "rect";
   onCropComplete: (croppedImage: string) => void;
   onClose: () => void;
 };
@@ -21,6 +23,8 @@ type ImageCropModalProps = {
 export default function ImageCropModal({
   open,
   imageSrc,
+  aspect = 1,
+  cropShape = "round",
   onCropComplete,
   onClose,
 }: ImageCropModalProps) {
@@ -98,8 +102,8 @@ export default function ImageCropModal({
             crop={crop}
             zoom={zoom}
             rotation={rotation}
-            aspect={1}
-            cropShape="round"
+            aspect={aspect}
+            cropShape={cropShape}
             showGrid={false}
             onCropChange={setCrop}
             onCropAreaChange={onCropAreaChange}

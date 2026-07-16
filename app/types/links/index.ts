@@ -1,3 +1,5 @@
+import { ProfileDesign, SocialLink } from "@/app/types/design";
+
 export interface CreateLinkRequest {
   title: string;
   icon: string;
@@ -56,4 +58,20 @@ export interface ReorderLinksResponse {
 export interface ListLinksResponse {
   status: boolean;
   data: LinkItem[];
+}
+
+export interface PublicProfileResponse {
+  status?: boolean;
+  data: {
+    user: {
+      id: string;
+      fullName?: string;
+      bio?: string;
+      profileImage?: string;
+      username?: string;
+      design?: ProfileDesign | null;
+      socialLinks?: SocialLink[];
+    };
+    links: LinkItem[];
+  };
 }
