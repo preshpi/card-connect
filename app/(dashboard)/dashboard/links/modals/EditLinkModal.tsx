@@ -1,3 +1,5 @@
+import { LinkGroup } from "@/app/types/links";
+
 type EditLinkModalProps = {
   open: boolean;
   editTitleInput: string;
@@ -5,9 +7,12 @@ type EditLinkModalProps = {
   iconPreview: string;
   fileInputKey: number;
   isUpdatingLink: boolean;
+  groups?: LinkGroup[];
+  selectedGroupId?: string | null;
   onTitleChange: (value: string) => void;
   onUrlChange: (value: string) => void;
   onIconFileChange: (file: File | null) => void;
+  onGroupChange?: (groupId: string | null) => void;
   onClose: () => void;
   onSubmit: () => void;
 };
@@ -19,9 +24,12 @@ const EditLinkModal = ({
   iconPreview,
   fileInputKey,
   isUpdatingLink,
+  groups = [],
+  selectedGroupId = null,
   onTitleChange,
   onUrlChange,
   onIconFileChange,
+  onGroupChange,
   onClose,
   onSubmit,
 }: EditLinkModalProps) => {
@@ -97,6 +105,33 @@ const EditLinkModal = ({
               />
             ) : null}
           </div>
+
+          {groups.length > 0 && (
+            <div>
+              <label
+                htmlFor="edit-link-group"
+                className="mb-1.5 block text-sm font-medium text-gray-700"
+              >
+                Group (Optional)
+              </label>
+              <select
+                id="edit-link-group"
+                value={selectedGroupId || ""}
+                onChange={(event) =>
+                  onGroupChange?.(event.target.value || null)
+                }
+                disabled={isUpdatingLink}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:border-[#111827] focus:outline-none focus:ring-2 focus:ring-[#111827]/20"
+              >
+                <option value="">No Group</option>
+                {groups.map((group) => (
+                  <option key={group.id} value={group.id}>
+                    {group.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 flex items-center gap-3">

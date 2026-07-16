@@ -1,3 +1,5 @@
+import { LinkGroup } from "@/app/types/links";
+
 type AddLinkModalProps = {
   open: boolean;
   titleInput: string;
@@ -5,9 +7,12 @@ type AddLinkModalProps = {
   iconPreview: string;
   fileInputKey: number;
   isCreatingLink: boolean;
+  groups?: LinkGroup[];
+  selectedGroupId?: string | null;
   onTitleChange: (value: string) => void;
   onUrlChange: (value: string) => void;
   onIconFileChange: (file: File | null) => void;
+  onGroupChange?: (groupId: string | null) => void;
   onClose: () => void;
   onSubmit: () => void;
 };
@@ -19,9 +24,12 @@ const AddLinkModal = ({
   iconPreview,
   fileInputKey,
   isCreatingLink,
+  groups = [],
+  selectedGroupId = null,
   onTitleChange,
   onUrlChange,
   onIconFileChange,
+  onGroupChange,
   onClose,
   onSubmit,
 }: AddLinkModalProps) => {
@@ -98,6 +106,33 @@ const AddLinkModal = ({
               />
             ) : null}
           </div>
+
+          {groups.length > 0 && (
+            <div>
+              <label
+                htmlFor="link-group"
+                className="mb-1.5 block text-sm font-medium text-gray-700"
+              >
+                Group (Optional)
+              </label>
+              <select
+                id="link-group"
+                value={selectedGroupId || ""}
+                onChange={(event) =>
+                  onGroupChange?.(event.target.value || null)
+                }
+                disabled={isCreatingLink}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:border-[#111827] focus:outline-none focus:ring-2 focus:ring-[#111827]/20"
+              >
+                <option value="">No Group</option>
+                {groups.map((group) => (
+                  <option key={group.id} value={group.id}>
+                    {group.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 flex items-center gap-3">

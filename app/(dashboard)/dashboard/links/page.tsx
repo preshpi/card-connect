@@ -1,7 +1,7 @@
 "use client";
 
 import { DragEvent, useState } from "react";
-import { Grip, Pencil, ShareIcon, Trash } from "lucide-react";
+import { Grip, Pencil, ShareIcon, Trash, Plus } from "lucide-react";
 import Image from "next/image";
 import { useAuthStore } from "@/app/store/useAuthStore";
 import {
@@ -10,20 +10,30 @@ import {
   useGetLinks,
   useReorderLinks,
   useUpdateLink,
+  useCreateGroup,
+  useRenameGroup,
+  useDeleteGroup,
+  useMoveLink,
 } from "@/app/services/links";
 import { getApiErrorMessage } from "@/app/utils/apiError";
 import { toast } from "sonner";
-import { LinkItem } from "@/app/types/links";
+import { LinkItem, LinkGroup } from "@/app/types/links";
 import AddLinkModal from "@/app/(dashboard)/dashboard/links/modals/AddLinkModal";
 import EditLinkModal from "@/app/(dashboard)/dashboard/links/modals/EditLinkModal";
 import DeleteLinkModal from "@/app/(dashboard)/dashboard/links/modals/DeleteLinkModal";
 import ShareLinkModal from "@/app/(dashboard)/dashboard/links/modals/ShareLinkModal";
 import PreviewLinkModal from "./modals/PreviewLinkModal";
 import ShareProfileModal from "./modals/ShareProfileModal";
+import CreateGroupModal from "./modals/CreateGroupModal";
+import RenameGroupModal from "./modals/RenameGroupModal";
+import DeleteGroupModal from "./modals/DeleteGroupModal";
+import MoveToGroupModal from "./modals/MoveToGroupModal";
 import ProfileRenderer from "@/app/components/profile/ProfileRenderer";
 import PhoneFrame from "@/app/components/profile/PhoneFrame";
 import { DEFAULT_PROFILE_DESIGN } from "@/app/types/design";
 import { useDesignStore } from "@/app/store/useDesignStore";
+import { groupLinksByGroup } from "@/app/utils/links";
+import LinkGroupHeader from "./components/LinkGroupHeader";
 
 const CLOUDINARY_UPLOAD_URL =
   "https://api.cloudinary.com/v1_1/dpokiomqq/image/upload";
@@ -48,6 +58,7 @@ const MyLink = () => {
   const [addIconFile, setAddIconFile] = useState<File | null>(null);
   const [isAddIconUploading, setIsAddIconUploading] = useState(false);
   const [addIconInputKey, setAddIconInputKey] = useState(0);
+  const [addLinkGroupId, setAddLinkGroupId] = useState<string | null>(null);
   const [editingLinkId, setEditingLinkId] = useState<string | null>(null);
   const [deletingLinkId, setDeletingLinkId] = useState<string | null>(null);
   const [draggingLinkId, setDraggingLinkId] = useState<string | null>(null);
@@ -59,15 +70,28 @@ const MyLink = () => {
   const [editIconFile, setEditIconFile] = useState<File | null>(null);
   const [isEditIconUploading, setIsEditIconUploading] = useState(false);
   const [editIconInputKey, setEditIconInputKey] = useState(0);
+  const [editLinkGroupId, setEditLinkGroupId] = useState<string | null>(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [sharingLink, setSharingLink] = useState<LinkItem | null>(null);
   const [showShareProfileModal, setShowShareProfileModal] = useState(false);
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+  const [showRenameGroupModal, setShowRenameGroupModal] = useState(false);
+  const [renamingGroupId, setRenamingGroupId] = useState<string | null>(null);
+  const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false);
+  const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
+  const [showMoveToGroupModal, setShowMoveToGroupModal] = useState(false);
+  const [movingLinkId, setMovingLinkId] = useState<string | null>(null);
+  const [movingLinkTitle, setMovingLinkTitle] = useState("");
 
   const { data: linksResponse, isLoading: isLinksLoading } = useGetLinks();
   const { mutate: createLink, isPending: isCreatingLink } = useCreateLink();
   const { mutate: updateLink, isPending: isUpdatingLink } = useUpdateLink();
   const { mutate: deleteLink, isPending: isDeletingLink } = useDeleteLink();
   const { mutate: reorderLinks } = useReorderLinks();
+  const { mutate: createGroup, isPending: isCreatingGroup } = useCreateGroup();
+  const { mutate: renameGroup, isPending: isRenamingGroup } = useRenameGroup();
+  const { mutate: deleteGroupMutate, isPending: isDeletingGroup } = useDeleteGroup();
+  const { mutate: moveLink, isPending: isMovingLink } = useMoveLink();
 
   const baseLinks = linksResponse?.data ?? [];
   const links = pendingOrderIds
@@ -91,6 +115,7 @@ const MyLink = () => {
     setAddIconFile(null);
     setIsAddIconUploading(false);
     setAddIconInputKey((value) => value + 1);
+    setAddLinkGroupId(null);
   };
 
   const resetEditLinkForm = () => {
@@ -101,6 +126,7 @@ const MyLink = () => {
     setEditIconFile(null);
     setIsEditIconUploading(false);
     setEditIconInputKey((value) => value + 1);
+    setEditLinkGroupId(null);
   };
 
   const resetDeleteLinkForm = () => {
@@ -110,6 +136,97 @@ const MyLink = () => {
   const resetDragState = () => {
     setDraggingLinkId(null);
     setDragOverLinkId(null);
+  };
+
+  const handleCreateGroup = (name: string) => {
+    createGroup(
+      { name },
+      {
+        onSuccess: () => {
+          toast.success("Group created successfully");
+          setShowCreateGroupModal(false);
+        },
+        onError: (error: unknown) => {
+          toast.error(
+            getApiErrorMessage(error, "Failed to create group. Please try again.")
+          );
+        },
+      }
+    );
+  };
+
+  const handleRenameGroup = (groupId: string) => {
+    setRenamingGroupId(groupId);
+    setShowRenameGroupModal(true);
+  };
+
+  const handleRenameGroupSubmit = (newName: string) => {
+    if (!renamingGroupId) return;
+
+    renameGroup(
+      { id: renamingGroupId, data: { name: newName } },
+      {
+        onSuccess: () => {
+          toast.success("Group renamed successfully");
+          setShowRenameGroupModal(false);
+          setRenamingGroupId(null);
+        },
+        onError: (error: unknown) => {
+          toast.error(
+            getApiErrorMessage(error, "Failed to rename group. Please try again.")
+          );
+        },
+      }
+    );
+  };
+
+  const handleDeleteGroup = (groupId: string) => {
+    setDeletingGroupId(groupId);
+    setShowDeleteGroupModal(true);
+  };
+
+  const handleDeleteGroupConfirm = () => {
+    if (!deletingGroupId) return;
+
+    deleteGroupMutate(deletingGroupId, {
+      onSuccess: () => {
+        toast.success("Group deleted and links ungrouped");
+        setShowDeleteGroupModal(false);
+        setDeletingGroupId(null);
+      },
+      onError: (error: unknown) => {
+        toast.error(
+          getApiErrorMessage(error, "Failed to delete group. Please try again.")
+        );
+      },
+    });
+  };
+
+  const handleMoveLink = (linkId: string, linkTitle: string) => {
+    setMovingLinkId(linkId);
+    setMovingLinkTitle(linkTitle);
+    setShowMoveToGroupModal(true);
+  };
+
+  const handleMoveLinkSubmit = (groupId: string | null) => {
+    if (!movingLinkId) return;
+
+    moveLink(
+      { id: movingLinkId, groupId },
+      {
+        onSuccess: () => {
+          toast.success("Link moved successfully");
+          setShowMoveToGroupModal(false);
+          setMovingLinkId(null);
+          setMovingLinkTitle("");
+        },
+        onError: (error: unknown) => {
+          toast.error(
+            getApiErrorMessage(error, "Failed to move link. Please try again.")
+          );
+        },
+      }
+    );
   };
 
   const reorderList = (
@@ -246,6 +363,7 @@ const MyLink = () => {
         title,
         url,
         icon: icon || "https://example.com/icon.svg",
+        groupId: addLinkGroupId || undefined,
       },
       {
         onSuccess: (response) => {
@@ -278,6 +396,7 @@ const MyLink = () => {
     setEditIconDataUrl(link.icon || "");
     setEditIconFile(null);
     setEditIconInputKey((value) => value + 1);
+    setEditLinkGroupId(link.groupId || null);
     setShowEditLinkModal(true);
   };
 
@@ -329,6 +448,7 @@ const MyLink = () => {
           title,
           url,
           icon,
+          groupId: editLinkGroupId || null,
         },
       },
       {
@@ -493,15 +613,23 @@ const MyLink = () => {
             </div>
           </div>
 
-          {/* Add link */}
-          <button
-            onClick={() => setShowAddLinkModal(true)}
-            className="w-full bg-[#111827] text-white py-4 rounded-xl mb-8"
-          >
-            + Add Link
-          </button>
+          {/* Add link and Create Group buttons */}
+          <div className="flex gap-3 mb-8">
+            <button
+              onClick={() => setShowAddLinkModal(true)}
+              className="flex-1 bg-[#111827] text-white py-4 rounded-xl"
+            >
+              + Add Link
+            </button>
+            <button
+              onClick={() => setShowCreateGroupModal(true)}
+              className="flex-1 border border-gray-300 text-gray-900 py-4 rounded-xl hover:bg-gray-50 transition-colors"
+            >
+              + Create Group
+            </button>
+          </div>
 
-          {/* Links list */}
+          {/* Links list with grouping */}
           {isLinksLoading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((item) => (
@@ -523,67 +651,217 @@ const MyLink = () => {
               ))}
             </div>
           ) : hasLinks ? (
-            <div className="space-y-4">
-              {links.map((link: LinkItem) => (
-                <div
-                  key={link.id || `${link.title}-${link.url}`}
-                  draggable={Boolean(link.id)}
-                  onDragStart={() => link.id && handleDragStart(link.id)}
-                  onDragOver={(event) =>
-                    link.id && handleDragOver(event, link.id)
-                  }
-                  onDrop={(event) => link.id && handleDrop(event, link.id)}
-                  onDragEnd={resetDragState}
-                  className={`bg-white rounded-xl border p-4 flex items-center justify-between transition-colors ${
-                    dragOverLinkId === link.id && draggingLinkId !== link.id
-                      ? "border-[#111827]"
-                      : "border-gray-200"
-                  } ${draggingLinkId === link.id ? "opacity-60" : ""}`}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center lg:gap-x-10 gap-x-4 cursor-grab">
-                      <Grip size={20} color="#B3B5B4" />
-                      <div>
-                        <div className="flex items-center gap-x-3">
-                          {link.icon ? (
-                            <Image
-                              src={link.icon || ""}
-                              alt={link.title}
-                              width={25}
-                              height={25}
-                              className="object-cover"
-                            />
-                          ) : null}
-                          <p className="font-medium text-gray-900">
-                            {link.title}
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => openEditLinkModal(link)}
-                            aria-label={`Edit ${link.title}`}
-                            className="rounded p-1 hover:bg-gray-100"
-                          >
-                            <Pencil size={16} color="#000000" />
-                          </button>
-                        </div>
-                        <p className="text-xs sm:text-sm text-gray-500 truncate max-w-[200px] sm:max-w-xs md:max-w-md pt-2">
-                          {link.url}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => openDeleteLinkModal(link)}
-                      aria-label={`Delete ${link.title}`}
-                      className="rounded p-1 hover:bg-red-50"
-                    >
-                      <Trash size={20} color="#000000" />
-                    </button>
-                  </div>
+            <div className="space-y-6">
+              {(() => {
+                const groups = linksResponse?.groups || [];
+                const { grouped, ungrouped } = groupLinksByGroup(links, groups);
 
-                  <div className="flex items-center gap-3"></div>
-                </div>
-              ))}
+                return (
+                  <>
+                    {/* Grouped links */}
+                    {grouped.map(({ group, links: groupLinks }) => (
+                      <div key={group.id}>
+                        <LinkGroupHeader
+                          groupName={group.name}
+                          linkCount={groupLinks.length}
+                          onRename={() => handleRenameGroup(group.id)}
+                          onDelete={() => handleDeleteGroup(group.id)}
+                          isLoading={isRenamingGroup || isDeletingGroup}
+                        />
+                        <div className="space-y-3 mt-3">
+                          {groupLinks.map((link: LinkItem) => (
+                            <div
+                              key={link.id || `${link.title}-${link.url}`}
+                              draggable={Boolean(link.id)}
+                              onDragStart={() =>
+                                link.id && handleDragStart(link.id)
+                              }
+                              onDragOver={(event) =>
+                                link.id && handleDragOver(event, link.id)
+                              }
+                              onDrop={(event) =>
+                                link.id && handleDrop(event, link.id)
+                              }
+                              onDragEnd={resetDragState}
+                              className={`bg-white rounded-xl border p-4 flex items-center justify-between transition-colors ${
+                                dragOverLinkId === link.id &&
+                                draggingLinkId !== link.id
+                                  ? "border-[#111827]"
+                                  : "border-gray-200"
+                              } ${draggingLinkId === link.id ? "opacity-60" : ""}`}
+                            >
+                              <div className="flex items-center justify-between w-full">
+                                <div className="flex items-center lg:gap-x-10 gap-x-4 cursor-grab">
+                                  <Grip size={20} color="#B3B5B4" />
+                                  <div>
+                                    <div className="flex items-center gap-x-3">
+                                      {link.icon ? (
+                                        <Image
+                                          src={link.icon || ""}
+                                          alt={link.title}
+                                          width={25}
+                                          height={25}
+                                          className="object-cover"
+                                        />
+                                      ) : null}
+                                      <p className="font-medium text-gray-900">
+                                        {link.title}
+                                      </p>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          openEditLinkModal(link)
+                                        }
+                                        aria-label={`Edit ${link.title}`}
+                                        className="rounded p-1 hover:bg-gray-100"
+                                      >
+                                        <Pencil size={16} color="#000000" />
+                                      </button>
+                                    </div>
+                                    <p className="text-xs sm:text-sm text-gray-500 truncate max-w-[200px] sm:max-w-xs md:max-w-md pt-2">
+                                      {link.url}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleMoveLink(link.id || "", link.title)
+                                    }
+                                    aria-label={`Move ${link.title}`}
+                                    className="rounded p-1 hover:bg-blue-50"
+                                    title="Move to group"
+                                  >
+                                    <svg
+                                      width="20"
+                                      height="20"
+                                      fill="currentColor"
+                                      viewBox="0 0 24 24"
+                                      className="text-blue-600"
+                                    >
+                                      <path d="M19 12h-2v-2h-2v2h-2v2h2v2h2v-2h2v-2zm-8-6H9v2H7V6h4zm0 6H9v2H7v-2h4zm0 6H9v2H7v-2h4zM19 6v4h2V6h-2z" />
+                                    </svg>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      openDeleteLinkModal(link)
+                                    }
+                                    aria-label={`Delete ${link.title}`}
+                                    className="rounded p-1 hover:bg-red-50"
+                                  >
+                                    <Trash size={20} color="#000000" />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Ungrouped links */}
+                    {ungrouped.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 mb-3">
+                          Ungrouped
+                        </h3>
+                        <div className="space-y-3">
+                          {ungrouped.map((link: LinkItem) => (
+                            <div
+                              key={link.id || `${link.title}-${link.url}`}
+                              draggable={Boolean(link.id)}
+                              onDragStart={() =>
+                                link.id && handleDragStart(link.id)
+                              }
+                              onDragOver={(event) =>
+                                link.id && handleDragOver(event, link.id)
+                              }
+                              onDrop={(event) =>
+                                link.id && handleDrop(event, link.id)
+                              }
+                              onDragEnd={resetDragState}
+                              className={`bg-white rounded-xl border p-4 flex items-center justify-between transition-colors ${
+                                dragOverLinkId === link.id &&
+                                draggingLinkId !== link.id
+                                  ? "border-[#111827]"
+                                  : "border-gray-200"
+                              } ${draggingLinkId === link.id ? "opacity-60" : ""}`}
+                            >
+                              <div className="flex items-center justify-between w-full">
+                                <div className="flex items-center lg:gap-x-10 gap-x-4 cursor-grab">
+                                  <Grip size={20} color="#B3B5B4" />
+                                  <div>
+                                    <div className="flex items-center gap-x-3">
+                                      {link.icon ? (
+                                        <Image
+                                          src={link.icon || ""}
+                                          alt={link.title}
+                                          width={25}
+                                          height={25}
+                                          className="object-cover"
+                                        />
+                                      ) : null}
+                                      <p className="font-medium text-gray-900">
+                                        {link.title}
+                                      </p>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          openEditLinkModal(link)
+                                        }
+                                        aria-label={`Edit ${link.title}`}
+                                        className="rounded p-1 hover:bg-gray-100"
+                                      >
+                                        <Pencil size={16} color="#000000" />
+                                      </button>
+                                    </div>
+                                    <p className="text-xs sm:text-sm text-gray-500 truncate max-w-[200px] sm:max-w-xs md:max-w-md pt-2">
+                                      {link.url}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleMoveLink(link.id || "", link.title)
+                                    }
+                                    aria-label={`Move ${link.title}`}
+                                    className="rounded p-1 hover:bg-blue-50"
+                                    title="Move to group"
+                                  >
+                                    <svg
+                                      width="20"
+                                      height="20"
+                                      fill="currentColor"
+                                      viewBox="0 0 24 24"
+                                      className="text-blue-600"
+                                    >
+                                      <path d="M19 12h-2v-2h-2v2h-2v2h2v2h2v-2h2v-2zm-8-6H9v2H7V6h4zm0 6H9v2H7v-2h4zm0 6H9v2H7v-2h4zM19 6v4h2V6h-2z" />
+                                    </svg>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      openDeleteLinkModal(link)
+                                    }
+                                    aria-label={`Delete ${link.title}`}
+                                    className="rounded p-1 hover:bg-red-50"
+                                  >
+                                    <Trash size={20} color="#000000" />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
@@ -665,9 +943,12 @@ const MyLink = () => {
         iconPreview={addIconDataUrl}
         fileInputKey={addIconInputKey}
         isCreatingLink={isCreatingLink || isAddIconUploading}
+        groups={linksResponse?.groups}
+        selectedGroupId={addLinkGroupId}
         onTitleChange={setTitleInput}
         onUrlChange={setUrlInput}
         onIconFileChange={handleAddIconFileChange}
+        onGroupChange={setAddLinkGroupId}
         onClose={() => {
           setShowAddLinkModal(false);
           resetAddLinkForm();
@@ -682,9 +963,12 @@ const MyLink = () => {
         iconPreview={editIconDataUrl}
         fileInputKey={editIconInputKey}
         isUpdatingLink={isUpdatingLink || isEditIconUploading}
+        groups={linksResponse?.groups}
+        selectedGroupId={editLinkGroupId}
         onTitleChange={setEditTitleInput}
         onUrlChange={setEditUrlInput}
         onIconFileChange={handleEditIconFileChange}
+        onGroupChange={setEditLinkGroupId}
         onClose={() => {
           setShowEditLinkModal(false);
           resetEditLinkForm();
@@ -743,6 +1027,63 @@ const MyLink = () => {
           }}
         />
       )}
+
+      <CreateGroupModal
+        open={showCreateGroupModal}
+        isLoading={isCreatingGroup}
+        onClose={() => setShowCreateGroupModal(false)}
+        onSubmit={handleCreateGroup}
+      />
+
+      <RenameGroupModal
+        open={showRenameGroupModal}
+        currentName={
+          renamingGroupId && linksResponse?.groups
+            ? linksResponse.groups.find((g) => g.id === renamingGroupId)
+                ?.name || ""
+            : ""
+        }
+        isLoading={isRenamingGroup}
+        onClose={() => {
+          setShowRenameGroupModal(false);
+          setRenamingGroupId(null);
+        }}
+        onSubmit={handleRenameGroupSubmit}
+      />
+
+      <DeleteGroupModal
+        open={showDeleteGroupModal}
+        groupName={
+          deletingGroupId && linksResponse?.groups
+            ? linksResponse.groups.find((g) => g.id === deletingGroupId)
+                ?.name || ""
+            : ""
+        }
+        isLoading={isDeletingGroup}
+        onClose={() => {
+          setShowDeleteGroupModal(false);
+          setDeletingGroupId(null);
+        }}
+        onConfirm={handleDeleteGroupConfirm}
+      />
+
+      <MoveToGroupModal
+        open={showMoveToGroupModal}
+        linkTitle={movingLinkTitle}
+        groups={linksResponse?.groups || []}
+        selectedGroupId={
+          movingLinkId && links
+            ? links.find((l) => l.id === movingLinkId)?.groupId
+            : undefined
+        }
+        isLoading={isMovingLink}
+        onClose={() => {
+          setShowMoveToGroupModal(false);
+          setMovingLinkId(null);
+          setMovingLinkTitle("");
+        }}
+        onSubmit={handleMoveLinkSubmit}
+      />
     </div>
   );
 };
