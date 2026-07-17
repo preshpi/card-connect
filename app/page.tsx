@@ -9,8 +9,8 @@ import TestimonialSection from "./components/LandingPage/Testimony";
 
 export default function Home() {
   return (
-    <main className="text-neutral-500 min-h-screen bg-[#F9FAFB]">
-      <div className="px-4 md:px-6 lg:px-8">
+    <main className="text-neutral-500 min-h-screen  bg-[#F8F9FA] mb-16">
+      <div className="flex flex-col ">
         <Hero />
         <About />
         <HowItWorks />

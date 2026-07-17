@@ -1,56 +1,69 @@
-import Image from "next/image";
-import { Icons } from "../ui/Icon";
-import StepCard from "../stepCard";
-
 const HowItWorks = () => {
+  const steps = [
+    {
+      number: "1",
+      title: "Order Your CardConnect",
+      description:
+        "Choose from our premium materials—matte black, recycled ocean plastic, or sustainable bamboo.",
+    },
+    {
+      number: "2",
+      title: "Customize With Your Details",
+      description:
+        "Use our intuitive dashboard to link your LinkedIn, portfolio, and contact details instantly.",
+    },
+    {
+      number: "3",
+      title: "Tap to Share Your Profile",
+      description:
+        "Simply tap your card to any NFC-enabled smartphone. No app required for your connections.",
+    },
+  ];
+
   return (
-    <section className="w-full relative h-full py-20">
-      <div className="max-w-336 mx-auto">
-        {/* Heading */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl xl:text-6xl font-bold text-gray-900 leading-tight">
-            Three{" "}
-            <div className="relative inline-flex gap-2">
-              <div className="hidden md:block absolute right-6 -bottom-33 z-10">
-                <Icons.leafIcon />
-              </div>
-              <span className="relative inline-block">
-                <span className="text-[#7269E3]">Networking</span>
-              </span>{" "}
-            </div>{" "}
-            Steps
+    <section id="how-it-works" className="py-20 md:py-24">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header */}
+        <div className="mb-16 md:mb-20">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
+            Three <span className="text-[#7269E3]">Networking Steps</span>
           </h2>
+          <p className="text-lg md:text-xl text-gray-600">
+            How to revolutionize your professional presence in minutes.
+          </p>
         </div>
 
-        {/* Steps */}
-        <Image
-          src="/line.svg"
-          alt="line"
-          width={600}
-          height={600}
-          className="absolute left-[50%] translate-x-[-50%] z-0 hidden lg:block"
-        />
-        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
-          <StepCard
-            step="Step 1"
-            title="Order Your CardConnect"
-            from="from-[#EEF2FF]"
-            to="to-[#d4ddfa]"
-          />
+        {/* Steps Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
+          {steps.map((step, index) => (
+            <div
+              key={index}
+              className={`relative flex flex-col p-8 md:p-12 rounded-2xl shadow-sm overflow-hidden ${
+                index === 1 ? "md:translate-y-12" : ""
+              }`}
+            >
+              {/* Ghost Number Background */}
+              <div className="absolute top-0 right-[-1rem] z-40 text-9xl font-bold text-gray-200 opacity-50  leading-none">
+                {step.number}
+              </div>
 
-          <StepCard
-            step="Step 2"
-            title="Customize with your details"
-            from="from-[#F4F3FF]"
-            to="to-[#ECEBFF]"
-          />
+              {/* Step Number Label */}
+              <div className="flex items-center gap-2 mb-6 relative z-10">
+                <div className="h-0.5 w-8 bg-[#7269E3]"></div>
+                <span className="text-sm font-semibold text-[#7269E3] tracking-wider">
+                  STEP {step.number}
+                </span>
+              </div>
 
-          <StepCard
-            step="Step 3"
-            title="Tap to share your profile"
-            from="from-[#ECFDF5]"
-            to="to-[#D1FAE5]"
-          />
+              {/* Step Content */}
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 relative z-10">
+                {step.title}
+              </h3>
+              <p className="text-gray-600 leading-relaxed relative z-10">
+                {step.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
