@@ -40,7 +40,7 @@ export function groupLinksByGroup(
       return {
         group: group || {
           id: groupId,
-          name: groupId,
+          name: linksInGroup[0]?.groupName || groupId,
           userId: "",
           index: 0,
           createdAt: "",

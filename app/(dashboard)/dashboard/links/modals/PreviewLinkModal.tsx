@@ -1,4 +1,4 @@
-import { LinkItem } from "@/app/types/links";
+import { LinkGroup, LinkItem } from "@/app/types/links";
 import { MoreVertical } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -17,6 +17,7 @@ type PreviewLinkModalProps = {
   initial?: string;
   setShowShareProfileModal: (show: boolean) => void;
   links?: LinkItem[];
+  groups?: LinkGroup[];
   username?: string;
   openShareLinkModal: (link: LinkItem) => void;
 };
@@ -28,6 +29,7 @@ const PreviewLinkModal = ({
   bio,
   username,
   links,
+  groups,
   openShareLinkModal,
   initial,
   setShowShareProfileModal,
@@ -86,8 +88,10 @@ const PreviewLinkModal = ({
                 username: username || user?.username,
               }}
               links={links || []}
+              groups={groups}
               socialLinks={socialLinksDraft}
               design={user?.design || DEFAULT_PROFILE_DESIGN}
+              fillViewport={false}
             />
           </PhoneFrame>
         </div>

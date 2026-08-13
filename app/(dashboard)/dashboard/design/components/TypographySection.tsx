@@ -18,7 +18,9 @@ export default function TypographySection() {
   return (
     <div>
       <h2 className="text-lg font-semibold text-gray-900 mb-4">Typography</h2>
-      <p className="text-sm text-gray-600 mb-4">Choose a font for your profile</p>
+      <p className="text-sm text-gray-600 mb-4">
+        Choose a font for your profile
+      </p>
 
       <div className="space-y-3">
         {FONT_OPTIONS.map((font) => {
@@ -29,7 +31,7 @@ export default function TypographySection() {
             <button
               key={font.id}
               onClick={() => setDraft({ font: font.id as any })}
-              className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
+              className={`w-full p-4 rounded-xl border transition-all text-left ${
                 isSelected
                   ? "border-purple-600 bg-purple-50 shadow-md"
                   : "border-gray-200 bg-white hover:border-gray-300"

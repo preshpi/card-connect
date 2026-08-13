@@ -1,10 +1,12 @@
+"use client";
 import Link from "next/link";
+import Reveal from "../ui/Reveal";
 
 const CTASection = () => {
   return (
     <section className="py-16 md:py-24 bg-linear-to-br from-[#3C2FAA] via-[#6a5dd4] to-[#5a4dc4] rounded-[40px]">
       <div className="container mx-auto px-4 ">
-        <div className="max-w-4xl mx-auto text-center">
+        <Reveal className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
             Ready to Elevate Your Networking?
           </h2>
@@ -27,7 +29,7 @@ const CTASection = () => {
               </button>
             </Link>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

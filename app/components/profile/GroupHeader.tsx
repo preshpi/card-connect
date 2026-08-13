@@ -10,7 +10,7 @@ interface GroupHeaderProps {
 export default function GroupHeader({ groupName, design }: GroupHeaderProps) {
   return (
     <h3
-      className="text-sm font-semibold mt-4 uppercase tracking-wide"
+      className="text-sm font-semibold mt-4 uppercase tracking-wide text-center"
       style={{ color: design.textColor }}
     >
       {groupName}

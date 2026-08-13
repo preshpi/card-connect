@@ -161,14 +161,20 @@ const CustomizeDesignPage = () => {
         {/* Mobile Preview */}
         <div className="border-t border-gray-200 bg-white px-4 py-6 pb-6">
           <p className="text-sm font-medium text-gray-700 mb-4">Preview</p>
-          <DesignEditorLivePreview links={linksData?.data || []} />
+          <DesignEditorLivePreview
+            links={linksData?.data || []}
+            groups={linksData?.groups}
+          />
         </div>
       </div>
 
       {/* Right: Live Preview (Desktop Only) */}
       <div className="hidden lg:flex flex-col border-l border-gray-200 w-96 bg-white px-6 py-8 sticky top-0 h-screen overflow-y-auto">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Preview</h2>
-        <DesignEditorLivePreview links={linksData?.data || []} />
+        <DesignEditorLivePreview
+          links={linksData?.data || []}
+          groups={linksData?.groups}
+        />
       </div>
     </div>
   );

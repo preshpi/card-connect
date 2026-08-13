@@ -27,7 +27,7 @@ async function uploadImageToCloudinary(file: File) {
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(
-      `Upload failed with status ${response.status}: ${errorText}`
+      `Upload failed with status ${response.status}: ${errorText}`,
     );
   }
 
@@ -49,7 +49,7 @@ export default function AppearanceSection() {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleProfileImageChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
 
@@ -113,7 +113,10 @@ export default function AppearanceSection() {
         </p>
         <div className="space-y-2">
           {["circle", "rounded-square"].map((shape) => (
-            <label key={shape} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
+            <label
+              key={shape}
+              className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer"
+            >
               <input
                 type="radio"
                 name="profileShape"
@@ -137,7 +140,7 @@ export default function AppearanceSection() {
         <div className="border-t pt-6">
           <p className="text-sm font-medium text-gray-700 mb-3">Cover Image</p>
           <label
-            className="group relative flex h-32 w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 transition hover:border-purple-400 hover:bg-purple-50"
+            className="group relative flex h-32 w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-dashed border-gray-300 bg-gray-50 transition hover:border-purple-400 hover:bg-purple-50"
             onClick={() => fileInputRef.current?.click()}
           >
             {draft.coverImage ? (

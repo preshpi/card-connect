@@ -929,8 +929,10 @@ const MyLink = () => {
                 username: user?.username,
               }}
               links={links}
+              groups={linksResponse?.groups}
               socialLinks={useDesignStore((state) => state.socialLinksDraft)}
               design={user?.design || DEFAULT_PROFILE_DESIGN}
+              fillViewport={false}
             />
           </PhoneFrame>
         </div>
@@ -1006,6 +1008,7 @@ const MyLink = () => {
           fullName={fullName}
           bio={bio}
           links={links}
+          groups={linksResponse?.groups}
           username={user?.username}
           openShareLinkModal={openShareLinkModal}
           initial={initial}

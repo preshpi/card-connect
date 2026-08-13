@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import Reveal from "../ui/Reveal";
 
 const Hero = () => {
   return (
@@ -7,7 +9,7 @@ const Hero = () => {
       {/* Main content area */}
       <div className="flex flex-col items-center justify-center px-4 py-12 sm:py-16 md:px-6 md:py-20 text-center w-full">
         {/* Main heading with leaf icon */}
-        <div className="hidden md:block mb-6 w-full max-w-3xl">
+        <Reveal className="hidden md:block mb-6 w-full max-w-3xl">
           <h1 className="font-sora whitespace-pre-line text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 leading-tight">
             Tap. Connect.
             {/* <br /> */}
@@ -22,10 +24,10 @@ const Hero = () => {
               />
             </span>
           </h1>
-        </div>
+        </Reveal>
 
         {/* Mobile header text walk around for design accuracy */}
-        <div className="block md:hidden mb-6 w-full max-w-3xl">
+        <Reveal className="block md:hidden mb-6 w-full max-w-3xl">
           <h1 className="font-sora whitespace-pre-line text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
             <span className="block">Tap.</span>
             <span className="block">Connect.</span>
@@ -41,16 +43,25 @@ const Hero = () => {
               />
             </span>
           </h1>
-        </div>
+        </Reveal>
 
         {/* Subtitle */}
-        <p className="text-sm sm:text-base md:text-lg text-gray-700 max-w-2xl mb-8 sm:mb-10 md:mb-12 leading-relaxed font-work-sans">
-          Transform the way you network with our customizable NFC business
-          cards. Share your contact info and portfolio with a single tap away.
-        </p>
+        <Reveal
+          delay={0.15}
+          className="text-sm sm:text-base md:text-lg text-gray-700 max-w-2xl mb-8 sm:mb-10 md:mb-12 leading-relaxed font-work-sans"
+        >
+          <p>
+            Transform the way you network with our customizable NFC business
+            cards. Share your contact info and portfolio with a single tap
+            away.
+          </p>
+        </Reveal>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto">
+        <Reveal
+          delay={0.3}
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto"
+        >
           <Link href="/signup" className="w-full sm:w-auto">
             <button
               type="button"
@@ -67,7 +78,7 @@ const Hero = () => {
               Explore Catalogue
             </button>
           </Link>
-        </div>
+        </Reveal>
       </div>
     </div>
   );

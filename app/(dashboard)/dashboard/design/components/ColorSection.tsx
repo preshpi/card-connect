@@ -12,6 +12,17 @@ const COLOR_SWATCHES = [
   "#1F2937",
 ];
 
+const GRADIENT_SWATCHES = [
+  "linear-gradient(135deg, #667EEA 0%, #764BA2 100%)",
+  "linear-gradient(135deg, #FF5A5F 0%, #F59E0B 100%)",
+  "linear-gradient(135deg, #10B981 0%, #3B82F6 100%)",
+  "linear-gradient(135deg, #F093FB 0%, #F5576C 100%)",
+  "linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%)",
+  "linear-gradient(135deg, #FDBB2D 0%, #22C1C3 100%)",
+];
+
+const BACKGROUND_SWATCHES = [...COLOR_SWATCHES, ...GRADIENT_SWATCHES];
+
 const BUTTON_COLOR_SWATCHES = [
   "#7269E3",
   "#FF5A5F",
@@ -44,16 +55,18 @@ function ColorInput({ label, value, onChange, swatches }: ColorInputProps) {
               onChange(color);
               setShowCustom(false);
             }}
-            className={`w-8 h-8 rounded-lg border-2 transition-all ${
-              value === color ? "border-gray-900 ring-2 ring-offset-2" : "border-gray-300 hover:border-gray-400"
+            className={`w-8 h-8 rounded-lg border transition-all ${
+              value === color
+                ? "border-gray-900 ring-2 ring-offset-2"
+                : "border-gray-300 hover:border-gray-400"
             }`}
-            style={{ backgroundColor: color }}
+            style={{ background: color }}
             title={color}
           />
         ))}
         <button
           onClick={() => setShowCustom(!showCustom)}
-          className={`w-8 h-8 rounded-lg border-2 font-bold text-xs flex items-center justify-center transition-all ${
+          className={`w-8 h-8 rounded-lg border font-bold text-xs flex items-center justify-center transition-all ${
             showCustom
               ? "border-purple-600 bg-purple-50"
               : "border-gray-300 hover:border-gray-400"
@@ -68,7 +81,7 @@ function ColorInput({ label, value, onChange, swatches }: ColorInputProps) {
         <div className="mt-2 flex gap-2">
           <input
             type="color"
-            value={value}
+            value={/^#[0-9A-Fa-f]{6}$/.test(value) ? value : "#000000"}
             onChange={(e) => onChange(e.target.value)}
             className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
           />
@@ -102,7 +115,7 @@ export default function ColorSection() {
         label="Background Color"
         value={draft.backgroundColor}
         onChange={(color) => setDraft({ backgroundColor: color })}
-        swatches={COLOR_SWATCHES}
+        swatches={BACKGROUND_SWATCHES}
       />
 
       <ColorInput

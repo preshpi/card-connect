@@ -1,3 +1,6 @@
+"use client";
+import Reveal from "../ui/Reveal";
+
 const HowItWorks = () => {
   const steps = [
     {
@@ -24,20 +27,21 @@ const HowItWorks = () => {
     <section id="how-it-works" className="py-20 md:py-24">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="mb-16 md:mb-20">
+        <Reveal className="mb-16 md:mb-20">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
             Three <span className="text-[#7269E3]">Networking Steps</span>
           </h2>
           <p className="text-lg md:text-xl text-gray-600">
             How to revolutionize your professional presence in minutes.
           </p>
-        </div>
+        </Reveal>
 
         {/* Steps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
           {steps.map((step, index) => (
-            <div
+            <Reveal
               key={index}
+              delay={index * 0.15}
               className={`relative flex flex-col p-8 md:p-12 rounded-2xl shadow-sm overflow-hidden ${
                 index === 1 ? "md:translate-y-12" : ""
               }`}
@@ -62,7 +66,7 @@ const HowItWorks = () => {
               <p className="text-gray-600 leading-relaxed relative z-10">
                 {step.description}
               </p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>

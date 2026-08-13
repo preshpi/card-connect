@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Reveal from "../ui/Reveal";
 
 const testimonials = [
   {
@@ -36,20 +37,21 @@ const TestimonialSection = () => {
     <section id="testimonials" className="py-16 md:py-24 bg-[#F8F9FA]">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-12 md:mb-16">
+        <Reveal className="text-center mb-12 md:mb-16">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
             Trusted by Professionals
           </h2>
           <p className="text-lg md:text-xl text-gray-600">
             Join thousands of networkers making a better first impression.
           </p>
-        </div>
+        </Reveal>
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {testimonials.map((testimonial) => (
-            <div
+          {testimonials.map((testimonial, index) => (
+            <Reveal
               key={testimonial.id}
+              delay={index * 0.15}
               className="bg-white rounded-2xl border border-gray-200 p-6 md:p-8 hover:shadow-lg transition-shadow duration-300"
             >
               {/* Star Rating */}
@@ -84,7 +86,7 @@ const TestimonialSection = () => {
                   <p className="text-sm text-gray-600">{testimonial.title}</p>
                 </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>

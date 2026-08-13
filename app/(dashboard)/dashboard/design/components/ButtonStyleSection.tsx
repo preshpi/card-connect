@@ -22,7 +22,7 @@ export default function ButtonStyleSection() {
       return {
         borderColor: draft.buttonColor,
         color: draft.buttonColor,
-        border: "2px solid",
+        border: "1px solid",
         backgroundColor: "transparent",
       };
     } else {
@@ -48,7 +48,7 @@ export default function ButtonStyleSection() {
             <button
               key={style.id}
               onClick={() => setDraft({ buttonStyle: style.id as any })}
-              className={`w-full p-4 rounded-xl border-2 transition-all ${
+              className={`w-full p-4 rounded-xl border transition-all ${
                 isSelected
                   ? "border-purple-600 bg-purple-50 shadow-md"
                   : "border-gray-200 bg-white hover:border-gray-300"

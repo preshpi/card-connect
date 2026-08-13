@@ -4,14 +4,16 @@ import { useDesignStore } from "@/app/store/useDesignStore";
 import { useAuthStore } from "@/app/store/useAuthStore";
 import ProfileRenderer from "@/app/components/profile/ProfileRenderer";
 import PhoneFrame from "@/app/components/profile/PhoneFrame";
-import { LinkItem } from "@/app/types/links";
+import { LinkGroup, LinkItem } from "@/app/types/links";
 
 interface DesignEditorLivePreviewProps {
   links: LinkItem[];
+  groups?: LinkGroup[];
 }
 
 export default function DesignEditorLivePreview({
   links,
+  groups,
 }: DesignEditorLivePreviewProps) {
   const draft = useDesignStore((state) => state.draft);
   const socialLinksDraft = useDesignStore((state) => state.socialLinksDraft);
@@ -27,8 +29,10 @@ export default function DesignEditorLivePreview({
           username: user?.username,
         }}
         links={links}
+        groups={groups}
         socialLinks={socialLinksDraft}
         design={draft}
+        fillViewport={false}
       />
     </PhoneFrame>
   );

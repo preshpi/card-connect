@@ -1,4 +1,6 @@
+"use client";
 import { Icons } from "../ui/Icon";
+import Reveal from "../ui/Reveal";
 
 const Benefit = () => {
   return (
@@ -6,7 +8,7 @@ const Benefit = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
-          <div>
+          <Reveal direction="left">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-12">
               Why Choose Our
               <br />
@@ -51,10 +53,14 @@ const Benefit = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Right Image */}
-          <div className="hidden md:flex items-center justify-center">
+          <Reveal
+            direction="right"
+            delay={0.15}
+            className="hidden md:flex items-center justify-center"
+          >
             <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden bg-linear-to-br from-purple-900 to-gray-900">
               {/* Placeholder for product image */}
               <div className="w-full h-full flex items-center justify-center">
@@ -64,7 +70,7 @@ const Benefit = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

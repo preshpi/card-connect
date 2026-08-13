@@ -22,7 +22,7 @@ export default function ThemeSelector() {
           <button
             key={theme.id}
             onClick={() => setDraft({ theme: theme.id })}
-            className={`p-4 rounded-xl border-2 transition-all text-left ${
+            className={`p-4 rounded-xl border transition-all text-left ${
               draft.theme === theme.id
                 ? "border-purple-600 bg-purple-50 shadow-md"
                 : "border-gray-200 bg-white hover:border-gray-300"
@@ -48,9 +48,7 @@ export default function ThemeSelector() {
             <h3 className="font-semibold text-gray-900 text-sm">
               {theme.name}
             </h3>
-            <p className="text-xs text-gray-600">
-              {theme.description}
-            </p>
+            <p className="text-xs text-gray-600">{theme.description}</p>
           </button>
         ))}
       </div>

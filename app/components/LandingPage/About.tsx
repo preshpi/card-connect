@@ -1,11 +1,13 @@
+"use client";
 import { Icons } from "../ui/Icon";
+import Reveal from "../ui/Reveal";
 
 const About = () => {
   return (
     <section className="py-20 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         {/* Centered Header */}
-        <div className="text-center mb-16 md:mb-20">
+        <Reveal className="text-center mb-16 md:mb-20">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
             Ditch Paper Cards for
             <br />
@@ -19,12 +21,15 @@ const About = () => {
             contributing to environmental waste. By switching to NFC cards, you
             reduce waste and simplify how you share your details.
           </p>
-        </div>
+        </Reveal>
 
         {/* Feature Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Eco Friendly Card */}
-          <div className="p-8 md:p-10 rounded-2xl border border-[#10B981] hover:shadow-lg transition-shadow">
+          <Reveal
+            direction="left"
+            className="p-8 md:p-10 rounded-2xl border border-[#10B981] hover:shadow-lg transition-shadow"
+          >
             <div className="w-16 h-16 rounded-full bg-[#D1FAE5] flex items-center justify-center mb-6">
               <Icons.recycleIcon className="w-8 h-8 text-[#10B981]" />
             </div>
@@ -36,10 +41,14 @@ const About = () => {
               card. One CardConnect equals roughly 2,000 traditional paper cards
               over its lifetime.
             </p>
-          </div>
+          </Reveal>
 
           {/* Cost Effective Card */}
-          <div className="p-8 md:p-10 rounded-2xl border border-[#3C2FAA] hover:shadow-lg transition-shadow">
+          <Reveal
+            direction="right"
+            delay={0.15}
+            className="p-8 md:p-10 rounded-2xl border border-[#3C2FAA] hover:shadow-lg transition-shadow"
+          >
             <div className="w-16 h-16 rounded-full bg-[#EDE9FE] flex items-center justify-center mb-6">
               <Icons.costIcon className="w-8 h-8 text-[#7269E3]" />
             </div>
@@ -50,7 +59,7 @@ const About = () => {
               Pay once and update your details anytime without reprinting. Save
               thousands on design and printing costs year after year.
             </p>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
