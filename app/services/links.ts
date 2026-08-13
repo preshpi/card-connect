@@ -9,6 +9,10 @@ import {
   ReorderLinksResponse,
   UpdateLinkRequest,
   UpdateLinkResponse,
+  PublicProfileResponse,
+  LinkGroup,
+  CreateGroupRequest,
+  RenameGroupRequest,
 } from "@/app/types/links";
 
 const LINKS_QUERY_KEY = ["links"];
@@ -89,8 +93,73 @@ export const useReorderLinks = () => {
   });
 };
 
+export const useCreateGroup = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<LinkGroup, Error, CreateGroupRequest>({
+    mutationFn: async (data) => {
+      const response = await apiClient.getClient().post("/groups", data);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LINKS_QUERY_KEY });
+    },
+  });
+};
+
+export const useRenameGroup = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<LinkGroup, Error, { id: string; data: RenameGroupRequest }>(
+    {
+      mutationFn: async ({ id, data }) => {
+        const response = await apiClient
+          .getClient()
+          .patch(`/groups/${id}`, data);
+        return response.data.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: LINKS_QUERY_KEY });
+      },
+    }
+  );
+};
+
+export const useDeleteGroup = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, string>({
+    mutationFn: async (id) => {
+      await apiClient.getClient().delete(`/groups/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LINKS_QUERY_KEY });
+    },
+  });
+};
+
+export const useMoveLink = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    UpdateLinkResponse,
+    Error,
+    { id: string; groupId?: string | null }
+  >({
+    mutationFn: async ({ id, groupId }) => {
+      const response = await apiClient
+        .getClient()
+        .patch(`/links/${id}`, { groupId });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LINKS_QUERY_KEY });
+    },
+  });
+};
+
 export const useGetPublicProfile = (username: string | null) => {
-  return useQuery({
+  return useQuery<PublicProfileResponse, Error>({
     queryKey: ["public-profile", username],
     queryFn: async () => {
       if (!username) throw new Error("Username is required");

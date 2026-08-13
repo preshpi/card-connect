@@ -1,86 +1,65 @@
+"use client";
 import { Icons } from "../ui/Icon";
-import Image from "next/image";
+import Reveal from "../ui/Reveal";
 
 const About = () => {
   return (
-    <section className="w-full bg-[#F9FAFB] py-20 md:py-24">
-      <div className="max-w-336 mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-        {/* Left content */}
-        <div className="space-y-10">
-          {/* Heading */}
-          <div className="relative text-center md:text-left">
-            <div className="hidden md:block absolute -right-38 -top-14">
-              <Icons.scribbleArrow className="w-[260px]" />
+    <section className="py-20 md:py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Centered Header */}
+        <Reveal className="text-center mb-16 md:mb-20">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
+            Ditch Paper Cards for
+            <br />
+            <span className="text-[#10B981]">
+              Sustainable Digital Solutions
+            </span>
+          </h2>
+
+          <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+            Every year, 100 billion paper business cards are discarded,
+            contributing to environmental waste. By switching to NFC cards, you
+            reduce waste and simplify how you share your details.
+          </p>
+        </Reveal>
+
+        {/* Feature Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Eco Friendly Card */}
+          <Reveal
+            direction="left"
+            className="p-8 md:p-10 rounded-2xl border border-[#10B981] hover:shadow-lg transition-shadow"
+          >
+            <div className="w-16 h-16 rounded-full bg-[#D1FAE5] flex items-center justify-center mb-6">
+              <Icons.recycleIcon className="w-8 h-8 text-[#10B981]" />
             </div>
-
-            <h2 className="text-3xl md:text-4xl xl:text-5xl font-bold text-gray-900 leading-tight mb-4">
-              Ditch Paper Cards for{" "}
-              <span className="text-[#7269E3]">Sustainable</span> Digital
-              Solutions
-            </h2>
-
-            <p className="text-base md:text-lg text-gray-600 leading-relaxed max-w-2xl md:max-w-none mx-auto md:mx-0">
-              Every year, 100 billion paper business cards are discarded,
-              contributing to environmental waste. By switching to NFC cards,
-              you reduce waste and simplify how you share your details.
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Eco Friendly
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              Reduce waste and lower your carbon footprint with one reusable
+              card. One CardConnect equals roughly 2,000 traditional paper cards
+              over its lifetime.
             </p>
-          </div>
+          </Reveal>
 
-          {/* Benefits */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {/* Eco-Friendly */}
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#7269E3]/10 flex items-center justify-center flex-shrink-0">
-                <Icons.recycleIcon className="w-5 h-5 text-[#7269E3]" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                  Eco Friendly
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Reduce waste and lower your carbon footprint with one reusable
-                  card.
-                </p>
-              </div>
+          {/* Cost Effective Card */}
+          <Reveal
+            direction="right"
+            delay={0.15}
+            className="p-8 md:p-10 rounded-2xl border border-[#3C2FAA] hover:shadow-lg transition-shadow"
+          >
+            <div className="w-16 h-16 rounded-full bg-[#EDE9FE] flex items-center justify-center mb-6">
+              <Icons.costIcon className="w-8 h-8 text-[#7269E3]" />
             </div>
-
-            {/* Cost Effective */}
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#7269E3]/10 flex items-center justify-center flex-shrink-0">
-                <Icons.costIcon className="w-5 h-5 text-[#7269E3]" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                  Cost Effective
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Pay once and update your details anytime without reprinting.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right visual anchor */}
-        <div className="flex justify-center">
-          <div className="relative w-full max-w-lg aspect-[1.6/1] rounded-3xl bg-[#0B0F1A] overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(114,105,227,0.15),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(114,105,227,0.1),transparent_40%)]" />
-
-            <div className="relative p-8">
-              <Image
-                src="/assets/LogoWhite.svg"
-                alt="CardConnect"
-                width={96}
-                height={90}
-              />
-            </div>
-
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-white text-2xl font-semibold tracking-wide opacity-90">
-                YOUR DESIGN HERE
-              </span>
-            </div>
-          </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Cost Effective
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              Pay once and update your details anytime without reprinting. Save
+              thousands on design and printing costs year after year.
+            </p>
+          </Reveal>
         </div>
       </div>
     </section>

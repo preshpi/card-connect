@@ -1,15 +1,16 @@
+"use client";
 import Image from "next/image";
-import { Button } from "../ui/Button";
 import Link from "next/link";
+import Reveal from "../ui/Reveal";
 
 const Hero = () => {
   return (
-    <div className="min-h-fit max-w-336 mx-auto rounded-4xl md:rounded-[40px] bg-linear-to-br from-green-100/80 via-green-50/60 to-purple-100/80  bg-custom-radial flex flex-col">
+    <div className="bg-linear-to-br from-green-100/80 via-green-50/60 to-purple-100/80  bg-custom-radial flex flex-col">
       {/* Main content area */}
-      <div className=" flex flex-col items-center justify-center px-4 py-14 md:px-6 md:py-12 text-left md:text-center">
+      <div className="flex flex-col items-center justify-center px-4 py-12 sm:py-16 md:px-6 md:py-20 text-center w-full">
         {/* Main heading with leaf icon */}
-        <div className="hidden md:block mb-0 pb-6 md:mb-6 w-full max-w-3xl">
-          <h1 className="font-sora whitespace-pre-line text-[44px] md:text-7xl lg:text-8xl font-bold text-gray-900 leading-tight">
+        <Reveal className="hidden md:block mb-6 w-full max-w-3xl">
+          <h1 className="font-sora whitespace-pre-line text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 leading-tight">
             Tap. Connect.
             {/* <br /> */}
             <span className="relative inline-flex items-center md:gap-2 -mt-4">
@@ -23,42 +24,61 @@ const Hero = () => {
               />
             </span>
           </h1>
-        </div>
+        </Reveal>
 
         {/* Mobile header text walk around for design accuracy */}
-        <div className="block md:hidden mb-0 pb-6 md:mb-6 w-full max-w-3xl">
-          <h1 className="font-sora whitespace-pre-line text-[44px] md:text-7xl lg:text-8xl font-bold text-gray-900 leading-tight">
+        <Reveal className="block md:hidden mb-6 w-full max-w-3xl">
+          <h1 className="font-sora whitespace-pre-line text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
             <span className="block">Tap.</span>
             <span className="block">Connect.</span>
             {/* <br /> */}
-            <span className="relative inline-flex items-center md:gap-2 -mt-4">
+            <span className="relative inline-flex items-center gap-1 sm:gap-2 -mt-2">
               Impress.
               <Image
                 src="/assets/Branch.svg"
                 alt=""
-                width={100}
-                height={32}
-                className="ml-2 md:ml-4 lg:ml-6"
+                width={80}
+                height={24}
+                className="ml-1 sm:ml-2"
               />
             </span>
           </h1>
-        </div>
+        </Reveal>
 
         {/* Subtitle */}
-        <p className="text-sm text-left md:text-center md:text-lg text-gray-700 max-w-164.5 mb-12 leading-relaxed font-work-sans">
-          Transform the way you network with our customizable NFC business
-          cards. Share your contact info and portfolio with a single tap away.
-        </p>
+        <Reveal
+          delay={0.15}
+          className="text-sm sm:text-base md:text-lg text-gray-700 max-w-2xl mb-8 sm:mb-10 md:mb-12 leading-relaxed font-work-sans"
+        >
+          <p>
+            Transform the way you network with our customizable NFC business
+            cards. Share your contact info and portfolio with a single tap
+            away.
+          </p>
+        </Reveal>
 
-        {/* CTA Button */}
-        <Link href="/signup">
-          <button
-            type="button"
-            className="bg-[#7269E3] cursor-pointer rounded-full text-white lg:py-5 py-4 shadow px-4 max-w-62.25"
-          >
-            Build My Smart Card
-          </button>
-        </Link>
+        {/* CTA Buttons */}
+        <Reveal
+          delay={0.3}
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto"
+        >
+          <Link href="/signup" className="w-full sm:w-auto">
+            <button
+              type="button"
+              className="w-full bg-[#7269E3] cursor-pointer rounded-full text-white py-3 sm:py-4 lg:py-5 px-6 sm:px-8 font-semibold hover:bg-[#6058d4] transition-colors"
+            >
+              Build My Smart Card →
+            </button>
+          </Link>
+          <Link href="/catalogue" className="w-full sm:w-auto">
+            <button
+              type="button"
+              className="w-full border-2 border-gray-300 cursor-pointer rounded-full text-gray-900 py-3 sm:py-4 lg:py-5 px-6 sm:px-8 font-semibold hover:border-gray-400 transition-colors"
+            >
+              Explore Catalogue
+            </button>
+          </Link>
+        </Reveal>
       </div>
     </div>
   );

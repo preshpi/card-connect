@@ -1,7 +1,12 @@
-import { LinkItem } from "@/app/types/links";
+import { LinkGroup, LinkItem } from "@/app/types/links";
 import { MoreVertical } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import ProfileRenderer from "@/app/components/profile/ProfileRenderer";
+import PhoneFrame from "@/app/components/profile/PhoneFrame";
+import { DEFAULT_PROFILE_DESIGN } from "@/app/types/design";
+import { useAuthStore } from "@/app/store/useAuthStore";
+import { useDesignStore } from "@/app/store/useDesignStore";
 
 type PreviewLinkModalProps = {
   show: boolean;
@@ -12,6 +17,7 @@ type PreviewLinkModalProps = {
   initial?: string;
   setShowShareProfileModal: (show: boolean) => void;
   links?: LinkItem[];
+  groups?: LinkGroup[];
   username?: string;
   openShareLinkModal: (link: LinkItem) => void;
 };
@@ -23,10 +29,14 @@ const PreviewLinkModal = ({
   bio,
   username,
   links,
+  groups,
   openShareLinkModal,
   initial,
   setShowShareProfileModal,
 }: PreviewLinkModalProps) => {
+  const user = useAuthStore((state) => state.user);
+  const draft = useDesignStore((state) => state.draft);
+  const socialLinksDraft = useDesignStore((state) => state.socialLinksDraft);
   return (
     <div>
       <div className="fixed inset-0 z-50 bg-gray-50 md:hidden flex flex-col">
@@ -67,66 +77,23 @@ const PreviewLinkModal = ({
           </div>
         </div>
 
-        {/* Preview Content */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="flex flex-col items-center gap-6 p-6 pt-8">
-            {/* Profile Section */}
-            <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
-              {profileImage ? (
-                <Image
-                  src={profileImage}
-                  alt={fullName || "Profile Image"}
-                  width={100}
-                  height={100}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-2xl font-semibold text-gray-600">
-                  {initial}
-                </span>
-              )}
-            </div>
-
-            <div className="text-center">
-              <p className="font-semibold text-gray-900 text-lg">{fullName}</p>
-              <p className="text-sm text-gray-600">{bio}</p>
-            </div>
-
-            {/* Links Section */}
-            <div className="w-full space-y-3 max-w-sm">
-              {links?.map((link: LinkItem) => (
-                <div
-                  key={`preview-${link.id || `${link.title}-${link.url}`}`}
-                  className="w-full rounded-xl bg-white border border-gray-200 px-4 py-4 text-gray-900 shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      {link.icon ? (
-                        <Image
-                          src={link.icon}
-                          alt={link.title}
-                          width={24}
-                          height={24}
-                          className="rounded object-cover shrink-0"
-                        />
-                      ) : null}
-                      <span className="truncate text-sm font-medium">
-                        {link.title}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => openShareLinkModal(link)}
-                      aria-label={`Share ${link.title}`}
-                      className="rounded p-1 hover:bg-gray-100 shrink-0 transition-colors"
-                    >
-                      <MoreVertical size={18} color="#6B7280" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Preview Content - Using ProfileRenderer */}
+        <div className="flex-1 overflow-y-auto flex items-center justify-center p-6">
+          <PhoneFrame>
+            <ProfileRenderer
+              user={{
+                fullName: fullName || user?.fullName,
+                bio: bio || user?.bio,
+                profileImage: profileImage || user?.profileImage,
+                username: username || user?.username,
+              }}
+              links={links || []}
+              groups={groups}
+              socialLinks={socialLinksDraft}
+              design={user?.design || DEFAULT_PROFILE_DESIGN}
+              fillViewport={false}
+            />
+          </PhoneFrame>
         </div>
       </div>
     </div>

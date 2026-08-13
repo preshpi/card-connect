@@ -1,8 +1,20 @@
+import { ProfileDesign, SocialLink } from "@/app/types/design";
+
+export interface LinkGroup {
+  id: string;
+  name: string;
+  userId: string;
+  index: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CreateLinkRequest {
   title: string;
   icon: string;
   url: string;
   index?: number;
+  groupId?: string;
 }
 
 export interface LinkItem {
@@ -11,6 +23,8 @@ export interface LinkItem {
   icon: string;
   url: string;
   index?: number;
+  groupId?: string;
+  groupName?: string;
 }
 
 export interface CreateLinkResponse {
@@ -23,6 +37,15 @@ export interface UpdateLinkRequest {
   icon?: string;
   url?: string;
   index?: number;
+  groupId?: string | null;
+}
+
+export interface CreateGroupRequest {
+  name: string;
+}
+
+export interface RenameGroupRequest {
+  name: string;
 }
 
 export interface UpdateLinkResponse {
@@ -56,4 +79,21 @@ export interface ReorderLinksResponse {
 export interface ListLinksResponse {
   status: boolean;
   data: LinkItem[];
+  groups?: LinkGroup[];
+}
+
+export interface PublicProfileResponse {
+  status?: boolean;
+  data: {
+    user: {
+      id: string;
+      fullName?: string;
+      bio?: string;
+      profileImage?: string;
+      username?: string;
+      design?: ProfileDesign | null;
+      socialLinks?: SocialLink[];
+    };
+    links: LinkItem[];
+  };
 }

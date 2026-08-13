@@ -1,3 +1,5 @@
+import { ProfileDesign, SocialLink } from "@/app/types/design";
+
 export interface SignUpRequest {
   fullName: string;
   email: string;
@@ -43,6 +45,8 @@ export interface ProfileUpdateRequest {
   email?: string;
   emailChangeOtp?: string;
   profileImage?: string;
+  design?: ProfileDesign;
+  socialLinks?: SocialLink[];
 }
 
 export interface AuthTokensResponse {
@@ -68,6 +72,8 @@ export interface User {
   emailVerified: boolean;
   username?: string;
   createdAt: string;
+  design?: ProfileDesign | null;
+  socialLinks?: SocialLink[];
 }
 
 export interface UserResponse {

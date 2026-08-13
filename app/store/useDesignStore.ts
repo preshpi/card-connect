@@ -1,56 +1,69 @@
 "use client";
 
 import { create } from "zustand";
+import { ProfileDesign, SocialLink, DEFAULT_PROFILE_DESIGN } from "@/app/types/design";
 
-export interface DesignCustomization {
-  headerStyle: string;
-  buttonStyle: string;
-  textFont: string;
-  backgroundColor: string;
+export interface DesignEditorState {
+  draft: ProfileDesign;
+  socialLinksDraft: SocialLink[];
+  isDirty: boolean;
+  isSaving: boolean;
+  saveStatus: "idle" | "saving" | "saved" | "error";
+
+  setDraft: (patch: Partial<ProfileDesign>) => void;
+  setSocialLinksDraft: (links: SocialLink[]) => void;
+  initFromUser: (design: ProfileDesign | null | undefined, socialLinks: SocialLink[] | null | undefined) => void;
+  markSaving: () => void;
+  markSaved: () => void;
+  markError: () => void;
 }
 
-interface DesignStore {
-  customization: DesignCustomization;
-  setHeaderStyle: (style: string) => void;
-  setButtonStyle: (style: string) => void;
-  setTextFont: (font: string) => void;
-  setBackgroundColor: (color: string) => void;
-  setCustomization: (customization: DesignCustomization) => void;
-  resetCustomization: () => void;
-}
+export const useDesignStore = create<DesignEditorState>((set) => ({
+  draft: DEFAULT_PROFILE_DESIGN,
+  socialLinksDraft: [],
+  isDirty: false,
+  isSaving: false,
+  saveStatus: "idle",
 
-const defaultCustomization: DesignCustomization = {
-  headerStyle: "Classic",
-  buttonStyle: "Fill",
-  textFont: "Manrope",
-  backgroundColor: "Gradient",
-};
-
-export const useDesignStore = create<DesignStore>((set) => ({
-  customization: defaultCustomization,
-
-  setHeaderStyle: (style: string) =>
+  setDraft: (patch: Partial<ProfileDesign>) =>
     set((state) => ({
-      customization: { ...state.customization, headerStyle: style },
+      draft: { ...state.draft, ...patch },
+      isDirty: true,
+      saveStatus: "idle",
     })),
 
-  setButtonStyle: (style: string) =>
+  setSocialLinksDraft: (links: SocialLink[]) =>
     set((state) => ({
-      customization: { ...state.customization, buttonStyle: style },
+      socialLinksDraft: links,
+      isDirty: true,
+      saveStatus: "idle",
     })),
 
-  setTextFont: (font: string) =>
-    set((state) => ({
-      customization: { ...state.customization, textFont: font },
-    })),
+  initFromUser: (design: ProfileDesign | null | undefined, socialLinks: SocialLink[] | null | undefined) =>
+    set({
+      draft: design ?? DEFAULT_PROFILE_DESIGN,
+      socialLinksDraft: socialLinks ?? [],
+      isDirty: false,
+      isSaving: false,
+      saveStatus: "idle",
+    }),
 
-  setBackgroundColor: (color: string) =>
-    set((state) => ({
-      customization: { ...state.customization, backgroundColor: color },
-    })),
+  markSaving: () =>
+    set({
+      isSaving: true,
+      saveStatus: "saving",
+    }),
 
-  setCustomization: (customization: DesignCustomization) =>
-    set({ customization }),
+  markSaved: () =>
+    set({
+      isSaving: false,
+      isDirty: false,
+      saveStatus: "saved",
+    }),
 
-  resetCustomization: () => set({ customization: defaultCustomization }),
+  markError: () =>
+    set({
+      isSaving: false,
+      saveStatus: "error",
+    }),
 }));

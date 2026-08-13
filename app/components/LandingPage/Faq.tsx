@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
+import Reveal from "../ui/Reveal";
 
 export const faqData = [
   {
@@ -38,17 +39,20 @@ const FAQSection = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-[#F5FAF7]">
+    <section id="faqs" className="py-16 md:py-24 bg-[#F3F4F5]">
       <div className="container mx-auto">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 text-center mb-12 md:mb-16">
-            FAQs
-          </h2>
+          <Reveal className="mb-12 md:mb-16">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 text-center">
+              FAQs
+            </h2>
+          </Reveal>
 
           <div className="space-y-4 md:space-y-6">
             {faqData.map((faq, index) => (
-              <div
+              <Reveal
                 key={faq.id}
+                delay={index * 0.08}
                 className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
               >
                 <button
@@ -77,11 +81,11 @@ const FAQSection = () => {
                     <p className="text-gray-700 leading-relaxed">{faq.a}</p>
                   </div>
                 )}
-              </div>
+              </Reveal>
             ))}
           </div>
 
-          <div className="text-center mt-12 md:mt-16">
+          <Reveal className="text-center mt-12 md:mt-16">
             <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
               Still have questions?
             </h3>
@@ -89,7 +93,7 @@ const FAQSection = () => {
             <button className="border-2 border-gray-300 text-gray-700 hover:border-[#7269E3] hover:text-[#7269E3] px-8 py-3 rounded-full transition-all duration-300">
               Contact Us
             </button>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
