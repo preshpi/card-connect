@@ -156,9 +156,6 @@ const Analytics = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6 md:mb-8 pt-8">
         <h1 className="text-2xl md:text-3xl font-bold">Analytics</h1>
-        <button className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
-          Filter <Filter className="w-4 h-4" />
-        </button>
       </div>
 
       <div className="flex overflow-x-auto pb-4 gap-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6 md:mx-0 md:px-0 md:pb-0 scrollbar-hide snap-x">
