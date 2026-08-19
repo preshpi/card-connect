@@ -1,14 +1,15 @@
 import { Icons } from "../ui/Icon";
 import Image from "next/image";
+import { Reveal } from "../ui/Reveal";
 
 const About = () => {
   return (
-    <section className="w-full bg-[#F9FAFB] py-20 md:py-24">
+    <section className="w-full bg-[#F9FAFB] py-20 md:py-24 px-4 md:px-6">
       <div className="max-w-336 mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         {/* Left content */}
         <div className="space-y-10">
           {/* Heading */}
-          <div className="relative text-center md:text-left">
+          <Reveal className="relative text-center md:text-left">
             <div className="hidden md:block absolute -right-38 -top-14">
               <Icons.scribbleArrow className="w-[260px]" />
             </div>
@@ -24,10 +25,10 @@ const About = () => {
               contributing to environmental waste. By switching to NFC cards,
               you reduce waste and simplify how you share your details.
             </p>
-          </div>
+          </Reveal>
 
           {/* Benefits */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <Reveal className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Eco-Friendly */}
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-full bg-[#7269E3]/10 flex items-center justify-center flex-shrink-0">
@@ -58,11 +59,11 @@ const About = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
 
         {/* Right visual anchor */}
-        <div className="flex justify-center">
+        <Reveal className="flex justify-center">
           <div className="relative w-full max-w-lg aspect-[1.6/1] rounded-3xl bg-[#0B0F1A] overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(114,105,227,0.15),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(114,105,227,0.1),transparent_40%)]" />
 
@@ -81,7 +82,7 @@ const About = () => {
               </span>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

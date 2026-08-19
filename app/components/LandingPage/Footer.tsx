@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "../../../public/assets/Logo.svg";
+import { Instagram, Twitter } from "lucide-react";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -40,14 +41,14 @@ const Footer = () => {
                 className="text-gray-600 hover:text-[#7269E3] transition-colors"
                 aria-label="Share"
               >
-                <span className="text-xl">🔗</span>
+                <Instagram className="w-5 h-5" />
               </a>
               <a
                 href="#"
                 className="text-gray-600 hover:text-[#7269E3] transition-colors"
                 aria-label="Global"
               >
-                <span className="text-xl">🌍</span>
+               <Twitter className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -72,14 +73,14 @@ const Footer = () => {
                   Catalogue
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <a
                   href="#bulk-orders"
                   className="text-gray-600 hover:text-[#7269E3] transition-colors text-sm"
                 >
                   Bulk Orders
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -103,14 +104,14 @@ const Footer = () => {
                   Terms of Service
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/shipping"
                   className="text-gray-600 hover:text-[#7269E3] transition-colors text-sm"
                 >
                   Shipping Info
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   href="/contact"

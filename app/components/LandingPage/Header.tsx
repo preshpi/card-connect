@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <nav className="w-full bg-[#F5FAF7] border-b border-[#E5E7EB]">
-      <div className="max-w-7xl mx-auto h-24 px-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto h-20 px-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="shrink-0">
           <Image

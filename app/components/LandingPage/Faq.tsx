@@ -39,7 +39,7 @@ const FAQSection = () => {
   };
 
   return (
-    <section id="faqs" className="py-16 md:py-24 bg-[#F3F4F5]">
+    <section id="faqs" className="py-16 md:py-24 px-4 md:px-6 bg-[#F3F4F5]">
       <div className="container mx-auto">
         <div className="max-w-4xl mx-auto">
           <Reveal className="mb-12 md:mb-16">

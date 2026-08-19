@@ -1,23 +1,24 @@
 import { Icons } from "../ui/Icon";
+import { Reveal } from "../ui/Reveal";
 
 const Benefit = () => {
   return (
-    <section className="py-20 md:py-24 bg-[#F5FAF7]">
+    <section className="py-20 md:py-24 px-4 md:px-6 bg-[#F5FAF7]">
       <div className="container mx-auto">
         <div className="max-w-6xl mx-auto">
           {/* Heading */}
-          <div className="text-center mb-16">
+          <Reveal className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
               Why Choose Our
               <br />
               <span className="text-[#7269E3]">NFC Cards</span>
             </h2>
-          </div>
+          </Reveal>
 
           {/* Cards */}
           <div className="grid md:grid-cols-2 gap-8">
             {/* One-Time Payment */}
-            <div className="relative rounded-3xl p-8 md:py-12 md:px-6 text-white overflow-hidden bg-linear-to-br from-[#7269E3] to-[#4F46E5]">
+            <Reveal className="relative rounded-3xl p-8 md:py-12 md:px-6 text-white overflow-hidden bg-linear-to-br from-[#7269E3] to-[#4F46E5]">
               {/* subtle glow */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.15),transparent_40%)]" />
 
@@ -36,10 +37,10 @@ const Benefit = () => {
                   Enjoy full ownership with no ongoing subscription fees.
                 </p>
               </div>
-            </div>
+            </Reveal>
 
             {/* Security */}
-            <div className="relative rounded-3xl p-8 md:py-12 md:px-6 text-white overflow-hidden bg-linear-to-br from-[#0F172A] to-[#020617]">
+            <Reveal className="relative rounded-3xl p-8 md:py-12 md:px-6 text-white overflow-hidden bg-linear-to-br from-[#0F172A] to-[#020617]">
               {/* subtle glow */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(114,105,227,0.25),transparent_45%)]" />
 
@@ -58,7 +59,7 @@ const Benefit = () => {
                   Experience peace of mind with advanced data protection.
                 </p>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </div>

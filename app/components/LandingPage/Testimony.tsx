@@ -1,9 +1,9 @@
 "use client";
 import Reveal from "../ui/Reveal";
 
-
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const testimonials = [
   {
@@ -91,18 +91,18 @@ const TestimonialSection = () => {
   };
 
   return (
-    <section className="py-16 bg-[#F5FAF7]">
-            <Reveal className="text-center mb-12 md:mb-16">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
-            Trusted by Professionals
-          </h2>
-          <p className="text-lg md:text-xl text-gray-600">
-            Join thousands of networkers making a better first impression.
-          </p>
-        </Reveal>
-      <div className="container mx-auto px-4 md:px-6 lg:px-8">
+    <section className="py-16 bg-[#F5FAF7] px-4 md:px-6">
+      <Reveal className="text-center mb-12 md:mb-16">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+          Trusted by Professionals
+        </h2>
+        <p className="text-lg md:text-xl text-gray-600">
+          Join thousands of networkers making a better first impression.
+        </p>
+      </Reveal>
+      <div className="container mx-auto  lg:px-8">
         {/* Desktop Layout */}
-        <div className="hidden md:block">
+        <Reveal className="hidden md:block">
           <div className="max-w-6xl mx-auto">
             <div className="relative">
               {/* Navigation Buttons */}
@@ -176,10 +176,10 @@ const TestimonialSection = () => {
               ))}
             </div>
           </div>
-        </div>
+        </Reveal>
 
         {/* Mobile Layout */}
-        <div className="md:hidden">
+        <Reveal className="md:hidden">
           <div className="relative">
             {/* Scrollable Container */}
             <div
@@ -223,27 +223,29 @@ const TestimonialSection = () => {
 
             {/* Navigation Buttons */}
             <button
-              className="absolute left-2 bottom-20 z-10 p-3 rounded-full bg-white border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-300 shadow-lg"
+              className="absolute left-2 bottom-1/2 z-10 p-2 rounded-full bg-white border-1 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-300 shadow-lg"
               onClick={handlePrevious}
             >
-              <Image
+              {/* <Image
                 src="/assets/icons/ChevronLeft.svg"
                 alt="left-arrow"
                 width={16}
                 height={16}
-              />
+              /> */}
+              <ChevronLeft className=" text-gray-800" size={20} />
             </button>
 
             <button
-              className="absolute right-2 bottom-20 z-10 p-3 rounded-full bg-white border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-300 shadow-lg"
+              className="absolute right-2 bottom-1/2 z-10 p-2 rounded-full bg-white border-1 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-300 shadow-lg"
               onClick={handleNext}
             >
-              <Image
+              {/* <Image
                 src="/assets/icons/ChevronRight.svg"
                 alt="right-arrow"
                 width={16}
                 height={16}
-              />
+              /> */}
+              <ChevronRight className=" text-gray-800" size={20} />
             </button>
 
             {/* Pagination Dots */}
@@ -261,7 +263,7 @@ const TestimonialSection = () => {
               ))}
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
