@@ -4,7 +4,7 @@ import Reveal from "../ui/Reveal";
 
 const CTASection = () => {
   return (
-    <section className="py-16 md:py-24 bg-linear-to-br from-[#3C2FAA] via-[#6a5dd4] to-[#5a4dc4] rounded-[40px]">
+    <section className="py-16 md:py-24 mx-4 md:mx-8 my-12 md:my-20 bg-linear-to-br from-[#3C2FAA] via-[#6a5dd4] to-[#5a4dc4] rounded-[40px]">
       <div className="container mx-auto px-4 ">
         <Reveal className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
